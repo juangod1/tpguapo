@@ -13,14 +13,15 @@ void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
 
 int menu()
 {
-	int c, menu_state=1, opcion=0;
+	int menu_state=1, opcion=0;
 	char file[]={};
-	while(menu_state)
+	while(menu_state == 1)
 	{
 		CLEAR_GRAPHICS;
 
 		if (opcion==-1) 
 			printf("\nError al leer parametros.\n");
+
 
 		opcion = getint("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElegir opcion: ");
 		
@@ -28,8 +29,10 @@ int menu()
 		{
 			size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
 			size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
-			if ( (size_y>30)||(size_y<5)||(size_x<5)||(size_x>30)) opcion = -1;
-			else menu_state = 0;
+			if ((size_y>30)||(size_y<5)||(size_x<5)||(size_x>30)) 
+				opcion = -1;
+			else
+				menu_state = 0;		
 		}
 		else if (opcion == 3) 
 		{
@@ -40,13 +43,14 @@ int menu()
 				printf("Error al cargar (El archivo esta corrupto o no existe)\n");
 				opcion = -1;
 			}
-			else menu_state = 0;
+			
 		}
 		else if (opcion == 4)
 		{
 			exit(0);
 		}
-		else opcion = -1;
+		else 
+			opcion = -1;
 	}
 	return opcion;
 }
