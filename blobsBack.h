@@ -1,4 +1,3 @@
-#define BOARD_SIZE_Y 10
-#define BOARD_SIZE_X 10
+#define BOARD_SIZE_MAX_Y 30
+#define BOARD_SIZE_MAX_X 30
 
-int display_board(char board[BOARD_SIZE_X][BOARD_SIZE_Y]);
