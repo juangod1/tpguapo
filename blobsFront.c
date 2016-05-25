@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "blobsBack.h"
+#include "getnum.h"
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 #define CLEAR_GRAPHICS for(i=0;i<50;i++) putchar('\n')
@@ -10,27 +11,49 @@ int i, j, size_x, size_y;
 
 void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
 
-void menu(int *opcion)
+int menu()
 {
-	int c, menu=1;
-	while(menu)
+	int c, menu_state=1, opcion=0;
+	char file[]={};
+	while(menu_state)
 	{
 		CLEAR_GRAPHICS;
 
-		if (*opcion==-1) printf("\nError al leer parametros.\n");
+		if (opcion==-1) 
+			printf("\nError al leer parametros.\n");
 
-		printf("1. Juego de dos jugadores\n2. Juego contra computadora\n3.Recuperar un juego grabado\n4. Terminar\n\nElegir opcion: ");
-		BORRA_BUFFER;
-		scanf("%i", opcion);
-
-		if ((c=gechar())!='\n') *opcion = -1;
-		else if (*opcion == 1) 
+		opcion = getint("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElegir opcion: ");
+		
+		if ((opcion == 1)||(opcion == 2)) 
+		{
+			size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
+			size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
+			if ( (size_y>30)||(size_y<5)||(size_x<5)||(size_x>30)) opcion = -1;
+			else menu_state = 0;
+		}
+		else if (opcion == 3) 
+		{
+			printf("Ingrese el nombre del archivo: ");
+			scanf("%s",file);
+			if (getchar()!='\n') /* || (NO ENCUENTRA EL ARCHIVO) no se como pija lo vamos a hacer */ 
+			{
+				printf("Error al cargar (El archivo esta corrupto o no existe)\n");
+				opcion = -1;
+			}
+			else menu_state = 0;
+		}
+		else if (opcion == 4)
+		{
+			exit(0);
+		}
+		else opcion = -1;
 	}
+	return opcion;
 }
 
 void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
-El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, recibimos como parametro el tamaño verdadero. */
+El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */
 	
 	CLEAR_GRAPHICS;
 
@@ -47,5 +70,5 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 }
 
 main(){
-
+menu();
 }
