@@ -23,10 +23,5 @@ int display_board(char board[BOARD_SIZE_X][BOARD_SIZE_Y])
 
 }
 
-main(){
-
-}
-
-
 
 
