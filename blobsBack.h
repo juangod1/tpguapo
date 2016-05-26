@@ -3,3 +3,6 @@
 
 int check_move(const char *move);
 
+void modify_board(const char *move, char board[][]);
+
+int turn(int mode);

@@ -10,9 +10,7 @@
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
 
-int i, j, size_x, size_y;
-
-void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
+int size_x, size_y;
 
 int menu()
 {
@@ -62,8 +60,8 @@ int menu()
 
 void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
-El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */
-	
+El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
+	int i,j;
 	CLEAR_GRAPHICS;
 
 	for ( i=0 ; i<size_y ; i++ )
@@ -80,23 +78,32 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 	}
 }
 
-void game_loop(int mode){
+void game_loop(int mode)
+{
+	int turno;
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
-	while(1){
-		switch(mode){
-			case NEWGAMEPVP ... NEWGAMEPVAI:
-				board[0][0]= 'A';
-				board[size_y-1][0]= 'A';
-				board[0][size_x-1]= 'Z';
-				board[size_y-1][size_x-1]= 'Z';
-				display_board(board);
-				break;
-			case CONTINUEGAME:
-				
-				break;
-		}
+	switch(mode)
+	{
+		case NEWGAMEPVP ... NEWGAMEPVAI:
+			board[0][0]= 'A';
+			board[size_y-1][0]= 'A';
+			board[0][size_x-1]= 'Z';
+			board[size_y-1][size_x-1]= 'Z';	
+			display_board(board);
+
+			break;
+		case CONTINUEGAME:
+
+			break;
+		
+	}
+	while(1)
+	{
+
 	}
 }
+
+
 
 int main()
 {
