@@ -6,6 +6,9 @@
 #define BOARD_SIZE_MAX_X 30
 #define CLEAR_GRAPHICS system("clear")
 #define BORRA_BUFFER while (getchar() != '\n')
+#define NEWGAMEPVP 1
+#define NEWGAMEPVAI 2
+#define CONTINUEGAME 3
 
 int i, j, size_x, size_y;
 
@@ -68,14 +71,35 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 		putchar('|');
 		for ( j=0 ; j<size_x ; j++ )
 		{
-			printf("%c |", board[i][j]);
+			if (board[i][j] == 0)
+				printf("%c |", board[i][j]);
+			else 
+				printf("%c|", board[i][j]);
 		}
 		putchar('\n');
 	}
+}
 
+void game_loop(int mode){
+	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
+	while(1){
+		switch(mode){
+			case NEWGAMEPVP ... NEWGAMEPVAI:
+				board[0][0]= 'A';
+				board[size_y-1][0]= 'A';
+				board[0][size_x-1]= 'Z';
+				board[size_y-1][size_x-1]= 'Z';
+				display_board(board);
+				break;
+			case CONTINUEGAME:
+				
+				break;
+		}
+	}
 }
 
 int main()
 {
-menu();
+int option=menu();
+game_loop(option);
 }
