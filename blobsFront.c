@@ -64,7 +64,6 @@ void getmove(int upnext)
 	printf("Jugador %d escriba su próxima jugada\n",(((upnext%2)==0)?(1):(2)));
 	while(jugadaincorrecta)
 	{
-		printf("estoy en el while\n");
 		scanf("[%d,%d] [%d,%d]", fromx, fromy, tox, toy);
 		while(getchar()!='\n')
 		{
