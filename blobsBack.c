@@ -10,21 +10,29 @@ int check_move(const char *move) /* recibe movida de get_move() y chequea si es 
 
 }
 
-void modify_board(const char *move, char board[][])
+void modify_board(const char *move, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {
 
 }
 
 int turn(int mode)
 {
+	int turn;
 	if ( mode != 3) /* NEWGAME */
 	{
 		srand(time(NULL));
-		return rand() % 2;
+		turn = rand() % 2;
 	}
 
 	else /* CONTINUE */
 	{
-		
+
 	}
+
+	return turn;
+}
+
+int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
+{
+
 }

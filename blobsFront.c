@@ -24,7 +24,7 @@ int menu()
 			printf("\nError al leer parametros.\n");
 
 
-		opcion = getint("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElegir opcion: ");
+		opcion = getint("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElega la opcion correspondiente: ");
 		
 		switch(opcion){
 			case 1 ... 2:
@@ -58,6 +58,26 @@ int menu()
 	return opcion;
 }
 
+void getmove(int upnext)
+{
+	int jugadaincorrecta=1, *fromx, *fromy, *tox, *toy;
+	printf("Jugador %d escriba su próxima jugada\n",(((upnext%2)==0)?(1):(2)));
+	while(jugadaincorrecta)
+	{
+		printf("estoy en el while\n");
+		scanf("[%d,%d] [%d,%d]", fromx, fromy, tox, toy);
+		while(getchar()!='\n')
+		{
+			BORRA_BUFFER;
+			printf("Error al leer los parámetros. Intente nuevamente\n");
+			scanf("[%d,%d] [%d,%d]", fromx, fromy, tox, toy);
+		}
+		if(0/*(jugadaincorrecta=((checkmove(board, upnext, *fromx, *fromy, *tox, *toy))?0:1))*/)
+			printf("Error: Jugada Imposible. Intente nuevamente\n");
+	}
+}
+
+
 void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
 El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
@@ -80,7 +100,6 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 
 void game_loop(int mode)
 {
-	int turno;
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
 	switch(mode)
 	{
@@ -90,23 +109,22 @@ void game_loop(int mode)
 			board[0][size_x-1]= 'Z';
 			board[size_y-1][size_x-1]= 'Z';	
 			display_board(board);
-
 			break;
 		case CONTINUEGAME:
-
 			break;
 		
 	}
-	while(1)
+	int upnext = turn(mode);
+	/*while(endgame())*/
 	{
+		getmove(upnext);
 
+		upnext++;
 	}
 }
 
-
-
 int main()
 {
-int option=menu();
+int option = menu();
 game_loop(option);
 }
