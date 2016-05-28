@@ -10,7 +10,7 @@
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
 
-int size_x, size_y;
+int size_x, size_y, from_x, from_y, to_x, to_y;
 
 int menu()
 {
@@ -60,16 +60,16 @@ int menu()
 
 void getmove(int upnext)
 {
-	int jugadaincorrecta=1, *fromx, *fromy, *tox, *toy;
+	int jugadaincorrecta=1;
 	printf("Jugador %d escriba su próxima jugada\n",(((upnext%2)==0)?(1):(2)));
 	while(jugadaincorrecta)
 	{
-		scanf("[%d,%d] [%d,%d]", fromx, fromy, tox, toy);
+		scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y);
 		while(getchar()!='\n')
 		{
 			BORRA_BUFFER;
 			printf("Error al leer los parámetros. Intente nuevamente\n");
-			scanf("[%d,%d] [%d,%d]", fromx, fromy, tox, toy);
+			scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y);
 		}
 		if(0/*(jugadaincorrecta=((checkmove(board, upnext, *fromx, *fromy, *tox, *toy))?0:1))*/)
 			printf("Error: Jugada Imposible. Intente nuevamente\n");
@@ -99,6 +99,7 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 
 void game_loop(int mode)
 {
+	int upnext;
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
 	switch(mode)
 	{
@@ -113,17 +114,21 @@ void game_loop(int mode)
 			break;
 		
 	}
-	int upnext = turn(mode);
-	/*while(endgame())*/
+	upnext = turn(mode);
+	while(endgame(board, upnext))
 	{
 		getmove(upnext);
-
 		upnext++;
 	}
 }
 
 int main()
 {
-int option = menu();
-game_loop(option);
+size_x = 3;
+size_y = 3;
+char board[30][30] = {{'A','A','A'},{'A','A','A'},{'A','A','A'}};
+
+if (endgame(board, 0)) printf("anda tu mierda");
+
+
 }

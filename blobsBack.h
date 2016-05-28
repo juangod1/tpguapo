@@ -1,10 +1,12 @@
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 
-int check_move(const char *move);
+extern int size_x, size_y, from_x, from_y, to_x, to_y;
+
+int check_move(int from_x, int from_y, int to_x, int to_y);
 
 void modify_board(const char *move, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
 
 int turn(int mode);
 
-int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
+int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext);
