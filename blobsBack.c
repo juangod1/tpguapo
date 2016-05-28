@@ -5,17 +5,29 @@
 #include <math.h>
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
-/*
-int check_move(int from_x, int from_y, int to_x, int to_y)
+
+int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext)
 {
-	int move_type; /* 0 si es invalida, 1 si es mitosis, 2 si es salto 
+	int move_type; /* 0 si es invalida, 1 si es mitosis, 2 si es salto */
+	float distance, hip = (from_x-to_x)*(from_x-to_x)+(from_y-to_y)*(from_y-to_y);
 
+	distance = sqrt(hip);
+	if ( board[from_y][from_x] == (upnext)?'Z':'A' )
+	{
+		if (distance==1) 
+			move_type = 1;
+		else if (distance==2) 
+			move_type = 2;
+		else 
+			move_type = 0;
 
-
-	if ( !VALID_SPACE(to_y,to_x,board) ) move_type = 0; 
+		if ( !valid_space(board,to_y,to_x) ) move_type = 0;
+	}
+	else 
+		move_type = 0;
 	return move_type; 
 }
-*/
+
 void modify_board(const char *move, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {
 
@@ -52,7 +64,9 @@ int direccion(int ang, int *i, int *j)
 
 int valid_space(char board[][BOARD_SIZE_MAX_X], int i, int j)
 {
-	int validity=((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1));
+	int validity=0;
+	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1));
+		validity=1;
 	return validity;
 }
 

@@ -126,9 +126,9 @@ int main()
 {
 size_x = 3;
 size_y = 3;
-char board[30][30] = {{'A','A','A'},{'A','A','A'},{'A','A','A'}};
+char board[30][30] = {{0,0,0},{0,0,0},{'A',0,0}};
 
-if (endgame(board, 0)) printf("anda tu mierda");
-
+if (check_move(2,1,0,1,board,0)) printf("si");
+else printf("no");
 
 }
