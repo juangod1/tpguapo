@@ -12,6 +12,8 @@
 
 void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
 
+void modify_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext);
+
 int size_x, size_y, from_x, from_y, to_x, to_y;
 
 int menu()
@@ -62,8 +64,15 @@ int menu()
 
 int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {
+<<<<<<< HEAD
 	int jugadacorrecta=0;
 	while(!jugadacorrecta)
+=======
+	int jugada=0;
+	display_board(board);
+	printf("Jugador %d escriba su próxima jugada\n",upnext);
+	while(!jugada)
+>>>>>>> origin/master
 	{
 		from_x=-1, from_y=-1, to_x=-1, to_y=-1
 		display_board(board);
@@ -74,7 +83,11 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 			BORRA_BUFFER;
 			printf("Error: Lectura de parámetros incorrectos. Intente nuevamente\n");
 		}
+<<<<<<< HEAD
 		else
+=======
+		if(!(jugada=(check_move(from_x, from_y, to_x, to_y, board, upnext))))
+>>>>>>> origin/master
 		{
 			jugadacorrecta=check_move(from_x, from_y, to_x, to_y, board, upnext))
 			if(jugadacorrecta)
@@ -82,7 +95,11 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 				printf("Error: Jugada Imposible. Intente nuevamente\n");
 		}
 	}
+<<<<<<< HEAD
 	return jugadacorrecta;
+=======
+	return jugada;
+>>>>>>> origin/master
 }
 
 
@@ -90,7 +107,7 @@ void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
 El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
 	int i,j;
-	/*CLEAR_GRAPHICS;*/
+	CLEAR_GRAPHICS;
 
 	for ( i=0 ; i<size_y ; i++ )
 	{
@@ -104,6 +121,14 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 		}
 		putchar('\n');
 	}
+}
+
+void modify_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext)
+{
+	char character = ((upnext%2)?'A':'Z');
+	board[to_y][to_x] = character;
+	if (move_type==2)
+		board[from_y][from_x] = 0;
 }
 
 void game_loop(int mode)
@@ -126,7 +151,8 @@ void game_loop(int mode)
 	upnext = (turn%2)+1;
 	while(!endgame(board, upnext))
 	{
-		getmove(upnext, board);
+		int move_type = getmove(upnext, board);
+		modify_board(board, move_type, upnext);
 		upnext = (++turn%2)+1;
 	}
 }
