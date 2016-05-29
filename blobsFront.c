@@ -64,15 +64,8 @@ int menu()
 
 int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {
-<<<<<<< HEAD
 	int jugadacorrecta=0;
 	while(!jugadacorrecta)
-=======
-	int jugada=0;
-	display_board(board);
-	printf("Jugador %d escriba su próxima jugada\n",upnext);
-	while(!jugada)
->>>>>>> origin/master
 	{
 		from_x=-1, from_y=-1, to_x=-1, to_y=-1
 		display_board(board);
@@ -83,11 +76,7 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 			BORRA_BUFFER;
 			printf("Error: Lectura de parámetros incorrectos. Intente nuevamente\n");
 		}
-<<<<<<< HEAD
 		else
-=======
-		if(!(jugada=(check_move(from_x, from_y, to_x, to_y, board, upnext))))
->>>>>>> origin/master
 		{
 			jugadacorrecta=check_move(from_x, from_y, to_x, to_y, board, upnext))
 			if(jugadacorrecta)
@@ -95,11 +84,7 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 				printf("Error: Jugada Imposible. Intente nuevamente\n");
 		}
 	}
-<<<<<<< HEAD
 	return jugadacorrecta;
-=======
-	return jugada;
->>>>>>> origin/master
 }
 
 
