@@ -6,6 +6,14 @@
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 
+int valid_space(char board[][BOARD_SIZE_MAX_X], int i, int j)
+{
+	int validity=0;
+	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1));
+		validity=1;
+	return validity;
+}
+
 int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext)
 {
 	int move_type; /* 0 si es invalida, 1 si es mitosis, 2 si es salto */
@@ -57,13 +65,6 @@ int direccion(int ang, int *i, int *j)
 	else if (ang == 315) {*j+=1; *i-=1;}
 }
 
-int valid_space(char board[][BOARD_SIZE_MAX_X], int i, int j)
-{
-	int validity=0;
-	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1));
-		validity=1;
-	return validity;
-}
 
 int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 {
