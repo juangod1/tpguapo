@@ -12,11 +12,11 @@ int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], i
 	float distance, hip = (from_x-to_x)*(from_x-to_x)+(from_y-to_y)*(from_y-to_y);
 
 	distance = sqrt(hip);
-	if ( board[from_y][from_x] == (upnext)?'Z':'A' )
+	if ( board[from_y][from_x] == ((upnext%2)?'A':'Z') )
 	{
-		if (distance==1) 
-			move_type = 1;
-		else if (distance==2) 
+		if ((distance==1)||((distance<=sqrt(2)+0.05) && (distance>= sqrt(2)-0.05)))  		/* Estoy chequeando que la distancia*/ 
+			move_type = 1;																	/*    sea la de un salto correcto   */
+		else if ((distance==2)||((distance<=sqrt(8)+0.05) && (distance>= sqrt(8)-0.05))) 
 			move_type = 2;
 		else 
 			move_type = 0;
@@ -25,7 +25,7 @@ int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], i
 	}
 	else 
 		move_type = 0;
-	return move_type; 
+	return move_type;
 }
 
 void modify_board(const char *move, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
@@ -33,7 +33,7 @@ void modify_board(const char *move, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_
 
 }
 
-int turn(int mode)
+int init_turn(int mode)
 {
 	int turn;
 	if ( mode != 3) /* NEWGAME */

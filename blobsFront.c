@@ -10,6 +10,8 @@
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
 
+void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
+
 int size_x, size_y, from_x, from_y, to_x, to_y;
 
 int menu()
@@ -58,21 +60,26 @@ int menu()
 	return opcion;
 }
 
-void getmove(int upnext)
+void getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {
-	int jugadaincorrecta=1;
-	printf("Jugador %d escriba su próxima jugada\n",(((upnext%2)==0)?(1):(2)));
-	while(jugadaincorrecta)
+	int jugadacorrecta=0;
+	display_board(board);
+	printf("Jugador %d escriba su próxima jugada\n",upnext);
+	while(!jugadacorrecta)
 	{
-		scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y);
+		scanf("[%d,%d][%d,%d]", &from_x, &from_y, &to_x, &to_y);
 		while(getchar()!='\n')
 		{
 			BORRA_BUFFER;
+			display_board(board);
 			printf("Error al leer los parámetros. Intente nuevamente\n");
-			scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y);
+			scanf("[%d,%d][%d,%d]", &from_x, &from_y, &to_x, &to_y);
 		}
-		if(0/*(jugadaincorrecta=((checkmove(board, upnext, *fromx, *fromy, *tox, *toy))?0:1))*/)
+		if(!(jugadacorrecta=(check_move(from_x, from_y, to_x, to_y, board, upnext))))
+		{
+			display_board(board);
 			printf("Error: Jugada Imposible. Intente nuevamente\n");
+		}
 	}
 }
 
@@ -81,7 +88,7 @@ void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
 El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
 	int i,j;
-	CLEAR_GRAPHICS;
+	/*CLEAR_GRAPHICS;*/
 
 	for ( i=0 ; i<size_y ; i++ )
 	{
@@ -99,7 +106,7 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 
 void game_loop(int mode)
 {
-	int upnext;
+	int upnext, turn;
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
 	switch(mode)
 	{
@@ -108,27 +115,23 @@ void game_loop(int mode)
 			board[size_y-1][0]= 'A';
 			board[0][size_x-1]= 'Z';
 			board[size_y-1][size_x-1]= 'Z';	
-			display_board(board);
 			break;
 		case CONTINUEGAME:
 			break;
 		
 	}
-	upnext = turn(mode);
-	while(endgame(board, upnext))
+	turn = init_turn(mode);
+	upnext = (turn%2)+1;
+	while(!endgame(board, upnext))
 	{
-		getmove(upnext);
-		upnext++;
+		getmove(upnext, board);
+		upnext = (++turn%2)+1;
 	}
 }
 
 int main()
 {
-size_x = 3;
-size_y = 3;
-char board[30][30] = {{0,0,0},{0,0,0},{'A',0,0}};
-
-if (check_move(2,1,0,1,board,0)) printf("si");
-else printf("no");
+int option = menu();
+game_loop(option);
 
 }
