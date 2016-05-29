@@ -28,11 +28,6 @@ int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], i
 	return move_type;
 }
 
-void modify_board(const char *move, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
-{
-
-}
-
 int init_turn(int mode)
 {
 	int turn;

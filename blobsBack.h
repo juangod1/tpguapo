@@ -5,8 +5,6 @@ extern int size_x, size_y, from_x, from_y, to_x, to_y;
 
 int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext);
 
-void modify_board(const char *move, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
-
 int init_turn(int mode);
 
 int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext);
