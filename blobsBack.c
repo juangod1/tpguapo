@@ -71,7 +71,7 @@ int init_turn(int mode)
 int direccion(int ang, int *i, int *j)
 {
 	if (ang == 0) j++;
-	else if (ang == 45)  {*j+=1; (*i)-=1;}
+	else if (ang == 45)  {*j+=1; *i-=1;}
 	else if (ang == 90)  {*i-=1;}
 	else if (ang == 135) {*j-=1; *i-=1;}
 	else if (ang == 180) {*j-=1;}
