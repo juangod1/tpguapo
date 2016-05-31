@@ -69,7 +69,7 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 	printf("Jugador %d escriba su próxima jugada\n",upnext);
     while(!jugada)
     {
-        while((cuantosleyo=scanf("(%d,%d) (%d,%d)", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
+        while((cuantosleyo=scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
         {
             BORRA_BUFFER;
             display_board(board);
