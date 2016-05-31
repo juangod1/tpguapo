@@ -69,7 +69,7 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 	printf("Jugador %d escriba su próxima jugada\n",upnext);
     while(!jugada)
     {
-        while((cuantosleyo=scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
+        while((cuantosleyo=scanf("(%d,%d) (%d,%d)", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
         {
             BORRA_BUFFER;
             display_board(board);
@@ -112,6 +112,7 @@ void modify_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type,
 	board[to_y][to_x] = character;
 	if (move_type==2)
 		board[from_y][from_x] = 0;
+	modifyAdjacentBlocks(board);
 }
 
 void game_loop(int mode)
