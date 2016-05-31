@@ -69,7 +69,7 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 	printf("Jugador %d escriba su próxima jugada\n",upnext);
     while(!jugada)
     {
-        while((cuantosleyo=scanf("(%d,%d) (%d,%d)", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
+        while((cuantosleyo=scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
         {
             BORRA_BUFFER;
             display_board(board);
@@ -89,11 +89,12 @@ int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
 El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
-	int i,j;
+	int i,j,k=0;
 	CLEAR_GRAPHICS;
 
 	for ( i=0 ; i<size_y ; i++ )
 	{
+		printf("%i ", k++);
 		putchar('|');
 		for ( j=0 ; j<size_x ; j++ )
 		{
@@ -104,6 +105,9 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 		}
 		putchar('\n');
 	}
+	printf("   ");
+	for (i=0;i!=k;i++) printf("%d ",i);
+	putchar('\n');
 }
 
 void modify_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext)
