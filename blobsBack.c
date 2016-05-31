@@ -84,7 +84,7 @@ int direccion(int ang, int *i, int *j)
 int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 {
 	int i, j, k, l, aux_i, aux_j;
-	char target = (upnext?'A':'Z');
+	char target = ((upnext==1)?'A':'Z');
 
 	for (i=0 ; i<size_y ; i++)
 	{
