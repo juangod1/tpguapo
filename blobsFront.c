@@ -94,7 +94,8 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 
 	for ( i=0 ; i<size_y ; i++ )
 	{
-		printf("%i ", k++);
+		if (i<10) printf("%d ",k++);
+		else printf("%d",k++);
 		putchar('|');
 		for ( j=0 ; j<size_x ; j++ )
 		{
@@ -106,7 +107,11 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 		putchar('\n');
 	}
 	printf("   ");
-	for (i=0;i!=k;i++) printf("%d ",i);
+	for (i=0;i!=k;i++)
+		{
+			if (i<10) printf("%d ",i);
+			else printf("%d",i);
+		}
 	putchar('\n');
 }
 
