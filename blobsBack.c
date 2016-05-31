@@ -14,6 +14,21 @@ int valid_space(char board[][BOARD_SIZE_MAX_X], int i, int j)
 	return validity;
 }
 
+void modifyAdjacentBlocks(char board[30][30])
+{
+    int i=to_x-1, j=to_y-1, auxj;
+    i=((i<0)?(0):(i));
+    auxj=((j<0)?(0):(j));
+    for(i=i; i<=to_x+1; i++)
+    {
+        for(j=auxj; j<=to_y+1; j++)
+        {
+            if(board[j][i]!=0 && j<=size_y && i<=size_x)
+                board[j][i]=board[to_y][to_x];
+        }
+    }
+}
+
 int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext)
 {
 	int move_type; /* 0 si es invalida, 1 si es mitosis, 2 si es salto */
