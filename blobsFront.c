@@ -62,27 +62,45 @@ int menu()
 	return opcion;
 }
 
-int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
+int getmove(int upnext, char board[][BOARD_SIZE_MAX_X])
 {
-    int cuantosleyo=0, jugada=0;
-	display_board(board);
-	printf("Jugador %d escriba su próxima jugada\n",upnext);
-    while(!jugada)
-    {
-        while((cuantosleyo=scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
+    char respuesta[20], nuevalinea;
+    int cantleido=0, estado=0, tipoinput=0;
+    display_board(board);
+    while(tipoinput==0)
         {
-            BORRA_BUFFER;
-            display_board(board);
-            printf("Error: Lectura de parámetros incorrectos. Intente nuevamente\nJugador %d escriba su próxima jugada\n", upnext);
+            printf("Turno de Jugador %d\n", upnext);
+            fgets(respuesta, 15, stdin);
+            if(strcmp("save\n",respuesta)==0)
+                estado=1;
+            if(strcmp("exit\n",respuesta)==0)
+                estado=2;
+            switch(estado)
+            {
+                case 1:
+                    tipoinput=3;
+                    break;
+                case 2:
+                    tipoinput=4;
+                    break;
+                default:
+                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &from_x, &from_y, &to_x, &to_y, &nuevalinea);
+                    if(cantleido==5 && nuevalinea==10)
+                    {
+                        if((tipoinput=check_move(from_x, from_y, to_x, to_y, board, upnext))==0)
+                        {
+                            display_board(board);
+                            printf("Error: Jugada Imposible\n");
+                        }
+                    }
+                    else
+                    {
+                    	display_board(board);
+                        printf("Error: Lectura de parametros incorrectos\n");
+           			}
+           	}
         }
-        jugada=check_move(from_x, from_y, to_x, to_y, board, upnext);
-        if(!jugada)
-        {
-            display_board(board);
-		    printf("Error: Jugada Imposible. Intente nuevamente\nJugador %d escriba su próxima jugada\n",upnext);
-        }
-    }
-    return jugada;
+        return tipoinput;
 }
 
 
@@ -145,8 +163,20 @@ void game_loop(int mode)
 	while(!endgame(board, upnext))
 	{
 		int move_type = getmove(upnext, board);
-		modify_board(board, move_type, upnext);
-		upnext = (++turn%2)+1;
+		switch(move_type)
+		{
+		case 1 ... 2: 
+			modify_board(board, move_type, upnext);
+			upnext = (++turn%2)+1;
+			break;
+		case 3:
+			printf("saving...\n");
+			break;
+		case 4:
+			CLEAR_GRAPHICS;
+			exit(0);
+			break;
+		}
 	}
 	printf("Felicitaciones jugador %d has ganado! \n",(upnext%2+1));
 	printf("pulse ctrl+z para salir\n");
