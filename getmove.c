@@ -1,22 +1,40 @@
-int getmove(int upnext, char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
+int getmove(upnext, board)
 {
-    int cuantosleyo=0, jugada=0;
-	display_board(board);
-	printf("Jugador %d escriba su próxima jugada\n",upnext);
-    while(!jugada)
+    char respuesta[15];
+    int tipoinput=0, cantleidos, fromx,fromy,tox,toy;
+    printf("Jugador %d escriba su proxima jugada\n", upnext);
+    fgets(respuesta, 15, stdin);
+    while(!tipoinput)
     {
-        while((cuantosleyo=scanf("[%d,%d] [%d,%d]", &from_x, &from_y, &to_x, &to_y))!=4 || getchar()!='\n')
+        fgets(respuesta, 15, stdin);
+        cantleidos=0;
+        if(strcmp("save",respuesta)==0)
+            tipoinput=3;
+        if(strcmp("save",exit)==0)
+            tipoinput=4;
+        if(cantleidos !=4 && !tipoinput)
         {
-            BORRA_BUFFER;
-            display_board(board);
-            printf("Error: Lectura de parámetros incorrectos. Intente nuevamente\nJugador %d escriba su próxima jugada\n", upnext);
+            if(cantleidos=sscanf(respuesta, "(%d,%d)(%d,%d)", &fromx, &fromy, &tox, &toy)!=4)
+            {
+                BORRA_BUFFER;
+                display_board(board);
+                printf("Error de lectura de parametros, intente nuevamente.\nJugador %d escriba su proxima jugada\n", upnext)
+                fgets(respuesta, 15, stdin);
+            }
         }
-        jugada=check_move(from_x, from_y, to_x, to_y, board, upnext);
-        if(!jugada)
+        if(getchar()=='\n' && !tipoinput)
         {
+            tipoinput=checkmove(from_x, from_y, to_x, to_y);
             display_board(board);
-		    printf("Error: Jugada Imposible. Intente nuevamente\nJugador %d escriba su próxima jugada\n",upnext);
+
+            if(!tipoinput)
+            {
+                display_board(board);
+                printf("Error: Jugada Imposible. Intente Nuevamente\nJugador %d escriba su proxima jugada\n", upnext)
+            }
         }
+        
+        
     }
-    return jugada;
+    return tipoinput;
 }
