@@ -27,9 +27,13 @@ int menu()
 		if (opcion==-1) 
 			printf("\nError al leer parametros.\n");
 
-
-		opcion = getint("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElija la opcion correspondiente: ");
-		
+		printf("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElija la opcion correspondiente: ");		
+		scanf("%d", &opcion);
+		if(getchar()!='\n')
+		{
+			opcion=-1;
+			BORRA_BUFFER;
+		}
 		switch(opcion){
 			case 1 ... 2:
 				size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
