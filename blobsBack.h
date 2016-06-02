@@ -10,3 +10,5 @@ int init_turn(int mode);
 int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext);
 
 void modifyAdjacentBlocks(char board[30][30]);
+
+int getmove_ai(char board[][BOARD_SIZE_MAX_X]);

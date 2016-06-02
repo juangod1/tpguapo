@@ -148,7 +148,7 @@ void modify_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type,
 
 void game_loop(int mode)
 {
-	int upnext, turn;
+	int upnext, turn, move_type;
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
 	switch(mode)
 	{
@@ -166,7 +166,10 @@ void game_loop(int mode)
 	upnext = (turn%2)+1;
 	while(!endgame(board, upnext))
 	{
-		int move_type = getmove(upnext, board);
+		/*if ((mode==2)&&(upnext==2))
+			move_type = getmove_ai(board[][BOARD_SIZE_MAX_X]);
+		else*/
+		move_type = getmove(upnext, board);
 		switch(move_type)
 		{
 		case 1 ... 2: 
