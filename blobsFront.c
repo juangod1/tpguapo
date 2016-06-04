@@ -67,7 +67,7 @@ int menu()
 	return opcion;
 }
 
-int getmove(int upnext, char board[][BOARD_SIZE_MAX_X])
+int getmove(int upnext, char board[][BOARD_SIZE_MAX_X],mode)
 {
     char respuesta[20], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0;
@@ -84,6 +84,7 @@ int getmove(int upnext, char board[][BOARD_SIZE_MAX_X])
             switch(estado)
             {
                 case 1:
+                	savefile(filename,mode,upnext,size_y,size_x,board)
                     tipoinput=3;
                     break;
                 case 2:
