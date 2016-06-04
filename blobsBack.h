@@ -12,3 +12,7 @@ int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext);
 void modifyAdjacentBlocks(char board[30][30]);
 
 int getmove_ai(char board[][BOARD_SIZE_MAX_X]);
+
+int openfile(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
+
+int savefile(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
