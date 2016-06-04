@@ -131,14 +131,16 @@ int check_captures(int i, int j, char board[][BOARD_SIZE_MAX_X])
 
 typedef struct 
 {
-	int from_x, from_y;
-} potential_moves;
+	int move_type;
+	int from_x, from_y, to_x, to_y;
+} potential_move;
 
 int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 {
 	int i, j, k, l;
 	int capt_aux, from_x_aux, from_y_aux, to_x_aux, to_y_aux, aux_i, aux_j;
-	int move_type, captures=0;
+	int move_type, move_index, captures=0, equal_moves_counter=0;
+	potential_move *potential_moves=NULL, *tmp;
 
 	for (i=0 ; i<size_y ; i++)
 	{
@@ -153,17 +155,35 @@ int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 					for ( l=0 ; l<2 ; l++ )
 					{
 						direccion(k, &i, &j);
+											/*
+											PARA JUAN CON RESACA DEL DOMINGO:
+												Falta considerar el caso en el que hay 0 capturas, por eso tira core dumped 
+											*/
 						if ( valid_space(board, i, j) )
 						{
 							move_type = check_move(aux_j, aux_i, j, i, board, 2);
 
-							if ( (capt_aux=check_captures(i ,j, board)) == captures)
+							if (  ((capt_aux=check_captures(i ,j, board)) == captures) && capt_aux)
 							{
-
+								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
+								if (tmp) potential_moves = tmp;
+								potential_moves[equal_moves_counter].from_x = aux_j;
+								potential_moves[equal_moves_counter].from_y = aux_i;
+								potential_moves[equal_moves_counter].to_x = j;
+								potential_moves[equal_moves_counter].to_y = i;
+								potential_moves[equal_moves_counter].move_type = move_type;
 							}
 							else if ( capt_aux > captures )
 							{
 								captures = capt_aux;
+								tmp = realloc(potential_moves, sizeof(potential_move));
+								if (tmp) potential_moves = tmp;
+								potential_moves[0].from_x = aux_j;
+								potential_moves[0].from_y = aux_i;
+								potential_moves[0].to_x = j;
+								potential_moves[0].to_y = i;
+								potential_moves[0].move_type = move_type;
+								equal_moves_counter = 1;
 							}
 						}
 					}
@@ -172,6 +192,25 @@ int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 				}
 			}
 		}
+	}
+
+	if ( equal_moves_counter == 1)
+	{
+		move_type = potential_moves[0].move_type;
+		from_x = potential_moves[0].from_x;
+		from_y = potential_moves[0].from_y;
+		to_x = potential_moves[0].to_x;
+		to_y = potential_moves[0].to_y;
+	}
+	else
+	{
+		srand(time(NULL));
+		move_index = rand()%(equal_moves_counter+1);
+		move_type = potential_moves[move_index].move_type;
+		from_x = potential_moves[move_index].from_x;
+		from_y = potential_moves[move_index].from_y;
+		to_x = potential_moves[move_index].to_x;
+		to_y = potential_moves[move_index].to_y;
 	}
 	return move_type;
 }

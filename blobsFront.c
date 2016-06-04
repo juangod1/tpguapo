@@ -168,10 +168,10 @@ void game_loop(int mode)
 	upnext = (turn%2)+1;
 	while(!endgame(board, upnext))
 	{
-		/*if ((mode==2)&&(upnext==2))
-			move_type = getmove_ai(board[][BOARD_SIZE_MAX_X]);
-		else*/
-		move_type = getmove(upnext, board);
+		if ((mode==2)&&(upnext==2))
+			move_type = getmove_ai(board);
+		else
+			move_type = getmove(upnext, board);
 		switch(move_type)
 		{
 		case 1 ... 2: 
