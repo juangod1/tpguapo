@@ -113,14 +113,16 @@ int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 
 int check_captures(int i, int j)
 {
+	int aux_j, aux_i, k, captures;
 	for ( k=0 ; k<360 ; k+=45 )
 	{
 		aux_i = i;
 		aux_j = j;
 		
 		direccion(k, &i, &j);
-		if ()
+		if (1)
 		{
+			
 		}
 		
 		i = aux_i;
