@@ -111,19 +111,17 @@ int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 	return 1;
 }
 
-int check_captures(int i, int j)
+int check_captures(int i, int j, char board[][BOARD_SIZE_MAX_X])
 {
-	int aux_j, aux_i, k, captures;
+	int aux_j, aux_i, k, captures=0;
 	for ( k=0 ; k<360 ; k+=45 )
 	{
 		aux_i = i;
 		aux_j = j;
 		
 		direccion(k, &i, &j);
-		if (1)
-		{
-			
-		}
+		if ( board[i][j]=='A' )
+			captures++;
 		
 		i = aux_i;
 		j = aux_j;
@@ -131,9 +129,16 @@ int check_captures(int i, int j)
 	return captures;
 }
 
+typedef struct 
+{
+	int from_x, from_y;
+} potential_moves;
+
 int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 {
-	int move_type, captures=0, capt_aux, from_x_aux, from_y_aux, to_x_aux, to_y_aux, i, j, k, l, aux_i, aux_j, move_type_aux;
+	int i, j, k, l;
+	int capt_aux, from_x_aux, from_y_aux, to_x_aux, to_y_aux, aux_i, aux_j;
+	int move_type, captures=0;
 
 	for (i=0 ; i<size_y ; i++)
 	{
@@ -148,9 +153,18 @@ int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 					for ( l=0 ; l<2 ; l++ )
 					{
 						direccion(k, &i, &j);
-						if ( valid_space(board, i, j) ){
-							/*if ( (capt_aux=check_captures(i ,j)) > captures )
-								captures = capt_aux; */
+						if ( valid_space(board, i, j) )
+						{
+							move_type = check_move(aux_j, aux_i, j, i, board, 2);
+
+							if ( (capt_aux=check_captures(i ,j, board)) == captures)
+							{
+
+							}
+							else if ( capt_aux > captures )
+							{
+								captures = capt_aux;
+							}
 						}
 					}
 					i = aux_i;
@@ -159,8 +173,6 @@ int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 			}
 		}
 	}
-
-	
 	return move_type;
 }
 
