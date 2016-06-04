@@ -111,9 +111,22 @@ int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 	return 1;
 }
 
-int check_captures()
+int check_captures(int i, int j)
 {
-
+	for ( k=0 ; k<360 ; k+=45 )
+	{
+		aux_i = i;
+		aux_j = j;
+		
+		direccion(k, &i, &j);
+		if ()
+		{
+		}
+		
+		i = aux_i;
+		j = aux_j;
+	}
+	return captures;
 }
 
 int getmove_ai(char board[][BOARD_SIZE_MAX_X])
@@ -134,7 +147,7 @@ int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 					{
 						direccion(k, &i, &j);
 						if ( valid_space(board, i, j) ){
-							/*if ( (capt_aux=check_captures(aux_i, aux_j, i ,j)) > captures )
+							/*if ( (capt_aux=check_captures(i ,j)) > captures )
 								captures = capt_aux; */
 						}
 					}
