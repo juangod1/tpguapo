@@ -11,9 +11,9 @@
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
 
-void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
+void display_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
 
-void modify_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext);
+void modify_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext);
 
 int size_x, size_y, from_x, from_y, to_x, to_y;
 
@@ -67,11 +67,11 @@ int menu()
 	return opcion;
 }
 
-int getmove(int upnext, char board[][BOARD_SIZE_MAX_X])
+int get_Move(int upnext, char board[][BOARD_SIZE_MAX_X])
 {
     char respuesta[20], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0;
-    display_board(board);
+    display_Board(board);
     char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
         {
@@ -93,9 +93,9 @@ int getmove(int upnext, char board[][BOARD_SIZE_MAX_X])
                     cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &from_x, &from_y, &to_x, &to_y, &nuevalinea);
                     if(cantleido==5 && nuevalinea==10)
                     {
-                        if((tipoinput=check_move(from_x, from_y, to_x, to_y, board, upnext))==0)
+                        if((tipoinput=check_Move(from_x, from_y, to_x, to_y, board, upnext))==0)
                         {
-                            display_board(board);
+                            display_Board(board);
                             printf("Error: Jugada Imposible\n");
                         }
                     }
@@ -110,7 +110,7 @@ int getmove(int upnext, char board[][BOARD_SIZE_MAX_X])
 }
 
 
-void display_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
+void display_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
 El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
 	int i,j,k=0;
@@ -139,16 +139,7 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 	putchar('\n');
 }
 
-void modify_board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext)
-{
-	char character = ((upnext%2)?'A':'Z');
-	board[to_y][to_x] = character;
-	if (move_type==2)
-		board[from_y][from_x] = 0;
-	modifyAdjacentBlocks(board);
-}
-
-void game_loop(int mode)
+void game_Loop(int mode)
 {
 	int upnext, turn, move_type;
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
@@ -164,9 +155,9 @@ void game_loop(int mode)
 			break;
 		
 	}
-	turn = init_turn(mode);
+	turn = initial_Turn(mode);
 	upnext = (turn%2)+1;
-	while(!endgame(board, upnext))
+	while(!end_Game(board, upnext))
 	{
 		if ((mode==2)&&(upnext==2))
 			move_type = getmove_ai(board);
@@ -175,7 +166,7 @@ void game_loop(int mode)
 		switch(move_type)
 		{
 		case 1 ... 2: 
-			modify_board(board, move_type, upnext);
+			modify_Board(board, move_type, upnext);
 			upnext = (++turn%2)+1;
 			break;
 		case 3:
@@ -198,6 +189,6 @@ void game_loop(int mode)
 int main()
 {
 int option = menu();
-game_loop(option);
+game_Loop(option);
 
 }

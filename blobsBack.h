@@ -3,16 +3,18 @@
 
 extern int size_x, size_y, from_x, from_y, to_x, to_y;
 
-int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext);
+int check_Move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext);
 
-int init_turn(int mode);
+int initial_Turn(int mode);
 
-int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext);
+int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext);
 
-void modifyAdjacentBlocks(char board[30][30]);
+void modify_Adjacent_Blocks(char board[30][30]);
 
-int getmove_ai(char board[][BOARD_SIZE_MAX_X]);
+void modify_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext);
 
-int openfile(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
+int get_Move_AI(char board[][BOARD_SIZE_MAX_X]);
 
-int savefile(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
+int open_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
+
+int save_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);

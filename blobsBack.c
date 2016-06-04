@@ -6,7 +6,7 @@
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 
-int valid_space(char board[][BOARD_SIZE_MAX_X], int i, int j)
+int valid_Space(char board[][BOARD_SIZE_MAX_X], int i, int j)
 {
 	int validity=0;
 	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1));
@@ -14,7 +14,7 @@ int valid_space(char board[][BOARD_SIZE_MAX_X], int i, int j)
 	return validity;
 }
 
-void modifyAdjacentBlocks(char board[30][30])
+void modify_Adjacent_Blocks(char board[30][30])
 {
     int i=to_x-1, j=to_y-1, auxj;
     i=((i<0)?(0):(i));
@@ -29,7 +29,7 @@ void modifyAdjacentBlocks(char board[30][30])
     }
 }
 
-int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext)
+int check_Move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext)
 {
 	int move_type; /* 0 si es invalida, 1 si es mitosis, 2 si es salto */
 	float distance, hip = (from_x-to_x)*(from_x-to_x)+(from_y-to_y)*(from_y-to_y);
@@ -44,14 +44,14 @@ int check_move(int from_x, int from_y, int to_x, int to_y, char board[30][30], i
 		else 
 			move_type = 0;
 
-		if ( !valid_space(board,to_y,to_x) ) move_type = 0;
+		if ( !valid_Space(board,to_y,to_x) ) move_type = 0;
 	}
 	else 
 		move_type = 0;
 	return move_type;
 }
 
-int init_turn(int mode)
+int initial_Turn(int mode)
 {
 	int turn;
 	if ( mode != 3) /* NEWGAME */
@@ -80,8 +80,16 @@ int direccion(int ang, int *i, int *j)
 	else if (ang == 315) {*j+=1; *i-=1;}
 }
 
+void modify_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext)
+{
+	char character = ((upnext%2)?'A':'Z');
+	board[to_y][to_x] = character;
+	if (move_type==2)
+		board[from_y][from_x] = 0;
+	modify_Adjacent_Blocks(board);
+}
 
-int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
+int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 {
 	int i, j, k, l, aux_i, aux_j;
 	char target = ((upnext==1)?'A':'Z');
@@ -99,7 +107,7 @@ int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 					for ( l=0 ; l<2 ; l++ )
 					{
 						direccion(k, &i, &j);
-						if ( valid_space(board, i, j) ) 
+						if ( valid_Space(board, i, j) ) 
 							return 0;
 					}
 					i = aux_i;
@@ -111,7 +119,7 @@ int endgame(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 	return 1;
 }
 
-int check_captures(int i, int j, char board[][BOARD_SIZE_MAX_X])
+int check_Captures(int i, int j, char board[][BOARD_SIZE_MAX_X])
 {
 	int aux_j, aux_i, k, captures=0;
 	for ( k=0 ; k<360 ; k+=45 )
@@ -135,7 +143,7 @@ typedef struct
 	int from_x, from_y, to_x, to_y;
 } potential_move;
 
-int getmove_ai(char board[][BOARD_SIZE_MAX_X])
+int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 {
 	int i, j, k, l;
 	int capt_aux, from_x_aux, from_y_aux, to_x_aux, to_y_aux, aux_i, aux_j;
@@ -161,7 +169,7 @@ int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 											*/
 						if ( valid_space(board, i, j) )
 						{
-							move_type = check_move(aux_j, aux_i, j, i, board, 2);
+							move_type = check_Move(aux_j, aux_i, j, i, board, 2);
 
 							if (  ((capt_aux=check_captures(i ,j, board)) == captures) && capt_aux)
 							{
@@ -215,7 +223,7 @@ int getmove_ai(char board[][BOARD_SIZE_MAX_X])
 	return move_type;
 }
 
-int openfile(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
+int open_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
 {
 	/* Necesito declarar todos los parametros de entrada? o por ser golbales no es necesario? */
 	FILE * savefile;
@@ -232,7 +240,7 @@ int openfile(char *filename, int mode,int upnext,int size_y, int size_x,char boa
 	fclose (savefile);
 	return 0;
 }
-int savefile(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
+int save_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
 {
 	/* Necesito declarar todos los parametros de entrada? o por ser golbales no es necesario? */
 	FILE * savefile;
