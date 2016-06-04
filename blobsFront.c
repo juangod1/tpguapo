@@ -101,7 +101,7 @@ int get_Move(int upnext, char board[][BOARD_SIZE_MAX_X])
                     }
                     else
                     {
-                    	display_board(board);
+                    	display_Board(board);
                         printf("Error: Lectura de parametros incorrectos\n");
            			}
            	}
@@ -160,9 +160,9 @@ void game_Loop(int mode)
 	while(!end_Game(board, upnext))
 	{
 		if ((mode==2)&&(upnext==2))
-			move_type = getmove_ai(board);
+			move_type = get_Move_AI(board);
 		else
-			move_type = getmove(upnext, board);
+			move_type = get_Move(upnext, board);
 		switch(move_type)
 		{
 		case 1 ... 2: 

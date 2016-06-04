@@ -167,11 +167,11 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 											PARA JUAN CON RESACA DEL DOMINGO:
 												Falta considerar el caso en el que hay 0 capturas, por eso tira core dumped 
 											*/
-						if ( valid_space(board, i, j) )
+						if ( valid_Space(board, i, j) )
 						{
 							move_type = check_Move(aux_j, aux_i, j, i, board, 2);
 
-							if (  ((capt_aux=check_captures(i ,j, board)) == captures) && capt_aux)
+							if (  ((capt_aux=check_Captures(i ,j, board)) == captures) && capt_aux)
 							{
 								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
