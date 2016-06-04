@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "blobsBack.h"
 #include "getnum.h"
+#include <string.h>
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 #define CLEAR_GRAPHICS system("clear")
@@ -71,12 +72,13 @@ int getmove(int upnext, char board[][BOARD_SIZE_MAX_X])
     char respuesta[20], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0;
     display_board(board);
+    char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
         {
             printf("Turno de Jugador %d\n", upnext);
             fgets(respuesta, 15, stdin);
-            if(strcmp("save\n",respuesta)==0)
-                estado=1;
+            if((cantleido=(sscanf(respuesta, "save %s%c", filename, &nuevalinea)))==2 && nuevalinea=='\n')
+                	estado=1;
             if(strcmp("exit\n",respuesta)==0)
                 estado=2;
             switch(estado)
