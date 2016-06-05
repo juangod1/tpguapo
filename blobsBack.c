@@ -149,6 +149,9 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 	int capt_aux, from_x_aux, from_y_aux, to_x_aux, to_y_aux, aux_i, aux_j;
 	int move_type, move_index, captures=-1, equal_moves_counter=0;
 	potential_move *potential_moves=NULL, *tmp;
+
+	display_Board(board);
+
 	for (i=0 ; i<size_y ; i++)
 	{
 		for (j=0 ; j<size_x ; j++)
