@@ -115,7 +115,7 @@ void display_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
 El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
 	int i,j,k=0;
 	CLEAR_GRAPHICS;
-
+	putchar('\n');
 	for ( i=0 ; i<size_y ; i++ )
 	{
 		if (i<10) printf("%d ",k++);

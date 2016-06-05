@@ -70,7 +70,7 @@ int initial_Turn(int mode)
 
 int direccion(int ang, int *i, int *j)
 {
-	if (ang == 0) j++;
+	if (ang == 0) {*j+=1;}
 	else if (ang == 45)  {*j+=1; *i-=1;}
 	else if (ang == 90)  {*i-=1;}
 	else if (ang == 135) {*j-=1; *i-=1;}
@@ -171,6 +171,7 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 
 							if (  ((capt_aux=check_Captures(i ,j, board)) == captures) )
 							{
+								printf("2");
 								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
 								potential_moves[equal_moves_counter-1].from_x = aux_j;
@@ -181,6 +182,7 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 							}
 							else if ( capt_aux > captures )
 							{
+								printf("1");
 								captures = capt_aux;
 								tmp = realloc(potential_moves, sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
