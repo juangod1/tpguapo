@@ -162,7 +162,7 @@ void game_Loop(int mode)
 		if ((mode==2)&&(upnext==2))
 		{
 			move_type = get_Move_AI(board);
-			system("sleep 2");
+			system("sleep 1");
 		}
 		else
 			move_type = get_Move(upnext, board);
