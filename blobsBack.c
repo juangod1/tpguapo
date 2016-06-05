@@ -9,7 +9,7 @@
 int valid_Space(char board[][BOARD_SIZE_MAX_X], int i, int j)
 {
 	int validity=0;
-	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1));
+	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1))
 		validity=1;
 	return validity;
 }
@@ -171,7 +171,6 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 
 							if (  ((capt_aux=check_Captures(i ,j, board)) == captures) )
 							{
-								printf("\n2\n");
 								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
 								potential_moves[equal_moves_counter-1].from_x = aux_j;
@@ -182,7 +181,6 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 							}
 							else if ( capt_aux > captures )
 							{
-								printf("\n1\n");
 								captures = capt_aux;
 								tmp = realloc(potential_moves, sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
