@@ -68,16 +68,16 @@ int initial_Turn(int mode)
 	return turn;
 }
 
-int direccion(int ang, int *i, int *j)
+void direccion(int ang, int *i, int *j)
 {
 	if (ang == 0) {*j+=1;}
 	else if (ang == 45)  {*j+=1; *i-=1;}
 	else if (ang == 90)  {*i-=1;}
 	else if (ang == 135) {*j-=1; *i-=1;}
 	else if (ang == 180) {*j-=1;}
-	else if (ang == 225) {*j-=1; *i-=1;}
-	else if (ang == 270) {*i-=1;}
-	else if (ang == 315) {*j+=1; *i-=1;}
+	else if (ang == 225) {*j-=1; *i+=1;}
+	else if (ang == 270) {*i+=1;}
+	else if (ang == 315) {*j+=1; *i+=1;}
 }
 
 void modify_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext)
@@ -127,12 +127,9 @@ int check_Captures(int i, int j, char board[][BOARD_SIZE_MAX_X])
 		aux_i = i;
 		aux_j = j;
 		
-		direccion(k, &i, &j);
-		if ( board[i][j]=='A' )
+		direccion(k, &aux_i, &aux_j);
+		if ( board[aux_i][aux_j]=='A' )
 			captures++;
-		
-		i = aux_i;
-		j = aux_j;
 	}
 	return captures;
 }
@@ -171,7 +168,6 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 
 							if (  ((capt_aux=check_Captures(i ,j, board)) == captures) )
 							{
-								printf("2");
 								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
 								potential_moves[equal_moves_counter-1].from_x = aux_j;
@@ -182,7 +178,6 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 							}
 							else if ( capt_aux > captures )
 							{
-								printf("1");
 								captures = capt_aux;
 								tmp = realloc(potential_moves, sizeof(potential_move));
 								if (tmp) potential_moves = tmp;

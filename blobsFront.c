@@ -183,10 +183,7 @@ void game_Loop(int mode)
 	}
 	printf("Felicitaciones jugador %d has ganado! \n",(upnext%2+1));
 	printf("pulse ctrl+z para salir\n");
-	while(1)
-	{
-	    
-	}
+	while(1);
 }
 
 int main()
