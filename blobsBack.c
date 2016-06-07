@@ -6,7 +6,7 @@
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 
-int valid_Space(char board[][BOARD_SIZE_MAX_X], int i, int j)
+int valid_Space(char board[][BOARD_SIZE_MAX_X], int size_y, int size_x, int i, int j)
 {
 	int validity=0;
 	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1))
@@ -14,17 +14,17 @@ int valid_Space(char board[][BOARD_SIZE_MAX_X], int i, int j)
 	return validity;
 }
 
-void modify_Adjacent_Blocks(char board[30][30])
+void modify_Adjacent_Blocks(game_data_type *game_data)
 {
-    int i=to_x-1, j=to_y-1, auxj;
+    int i=(*game_data).to_x-1, j=(*game_data).to_y-1, auxj;
     i=((i<0)?(0):(i));
     auxj=((j<0)?(0):(j));
-    for(i=i; i<=to_x+1; i++)
+    for(i=i; i<=(*game_data).to_x+1; i++)
     {
-        for(j=auxj; j<=to_y+1; j++)
+        for(j=auxj; j<=(*game_data).to_y+1; j++)
         {
-            if(board[j][i]!=0 && j<=size_y && i<=size_x)
-                board[j][i]=board[to_y][to_x];
+            if((*game_data).board[j][i]!=0 && j<=(*game_data).size_y && i<=(*game_data).size_x)
+                (*game_data).board[j][i]=(*game_data).board[(*game_data).to_y][(*game_data).to_x];
         }
     }
 }
@@ -44,7 +44,7 @@ int check_Move(int from_x, int from_y, int to_x, int to_y, char board[30][30], i
 		else 
 			move_type = 0;
 
-		if ( !valid_Space(board,to_y,to_x) ) move_type = 0;
+		if ( !valid_Space(board, from_y, from_x, to_y, to_x) ) move_type = 0;
 	}
 	else 
 		move_type = 0;
@@ -80,16 +80,16 @@ void direccion(int ang, int *i, int *j)
 	else if (ang == 315) {*j+=1; *i+=1;}
 }
 
-void modify_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext)
+void modify_Board(game_data_type *game_data, int move_type)
 {
-	char character = ((upnext%2)?'A':'Z');
-	board[to_y][to_x] = character;
+	char character = ((((*game_data).upnext)%2)?'A':'Z');
+	(*game_data).board[(*game_data).to_y][(*game_data).to_x] = character;
 	if (move_type==2)
-		board[from_y][from_x] = 0;
-	modify_Adjacent_Blocks(board);
+		(*game_data).board[(*game_data).from_y][(*game_data).from_x] = 0;
+	modify_Adjacent_Blocks(game_data);
 }
 
-int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
+int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext, int size_y, int size_x)
 {
 	int i, j, k, l, aux_i, aux_j;
 	char target = ((upnext==1)?'A':'Z');
@@ -107,7 +107,7 @@ int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext)
 					for ( l=0 ; l<2 ; l++ )
 					{
 						direccion(k, &i, &j);
-						if ( valid_Space(board, i, j) ) 
+						if ( valid_Space(board, size_y, size_x, i, j) ) 
 							return 0;
 					}
 					i = aux_i;
@@ -140,20 +140,20 @@ typedef struct
 	int from_x, from_y, to_x, to_y;
 } potential_move;
 
-int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
+int get_Move_AI(game_data_type *game_data)
 {
 	int i, j, k, l;
 	int capt_aux, from_x_aux, from_y_aux, to_x_aux, to_y_aux, aux_i, aux_j;
 	int move_type, move_index, captures=-1, equal_moves_counter=0;
 	potential_move *potential_moves=NULL, *tmp;
 
-	display_Board(board);
+	display_Board((*game_data).board);
 
-	for (i=0 ; i<size_y ; i++)
+	for (i=0 ; i<(*game_data).size_y ; i++)
 	{
-		for (j=0 ; j<size_x ; j++)
+		for (j=0 ; j<(*game_data).size_x ; j++)
 		{
-			if ( board[i][j] == 'Z' )
+			if ( (*game_data).board[i][j] == 'Z' )
 			{
 				for ( k=0 ; k<360 ; k+=45 )
 				{
@@ -161,19 +161,19 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 					aux_j = j;
 					for ( l=0 ; l<2 ; l++ )
 					{
-						direccion(k, &i, &j);
-						if ( valid_Space(board, i, j) )
+						direccion(k, &aux_i, &aux_j);
+						if ( valid_Space((*game_data).board, (*game_data).size_y, (*game_data).size_x, aux_i, aux_j) )
 						{
-							move_type = check_Move(aux_j, aux_i, j, i, board, 2);
+							move_type = check_Move(j, i, aux_j, aux_i, (*game_data).board, (*game_data).upnext);
 
-							if (  ((capt_aux=check_Captures(i ,j, board)) == captures) )
+							if (  ((capt_aux=check_Captures(i ,j, (*game_data).board)) == captures) )
 							{
 								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
-								potential_moves[equal_moves_counter-1].from_x = aux_j;
-								potential_moves[equal_moves_counter-1].from_y = aux_i;
-								potential_moves[equal_moves_counter-1].to_x = j;
-								potential_moves[equal_moves_counter-1].to_y = i;
+								potential_moves[equal_moves_counter-1].from_x = j;
+								potential_moves[equal_moves_counter-1].from_y = i;
+								potential_moves[equal_moves_counter-1].to_x = aux_j;
+								potential_moves[equal_moves_counter-1].to_y = aux_i;
 								potential_moves[equal_moves_counter-1].move_type = move_type;
 							}
 							else if ( capt_aux > captures )
@@ -181,17 +181,15 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 								captures = capt_aux;
 								tmp = realloc(potential_moves, sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
-								potential_moves[0].from_x = aux_j;
-								potential_moves[0].from_y = aux_i;
-								potential_moves[0].to_x = j;
-								potential_moves[0].to_y = i;
+								potential_moves[0].from_x = j;
+								potential_moves[0].from_y = i;
+								potential_moves[0].to_x = aux_j;
+								potential_moves[0].to_y = aux_i;
 								potential_moves[0].move_type = move_type;
 								equal_moves_counter = 1;
 							}
 						}
 					}
-					i = aux_i;
-					j = aux_j;
 				}
 			}
 		}
@@ -200,20 +198,20 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 	if ( equal_moves_counter == 1)
 	{
 		move_type = potential_moves[0].move_type;
-		from_x = potential_moves[0].from_x;
-		from_y = potential_moves[0].from_y;
-		to_x = potential_moves[0].to_x;
-		to_y = potential_moves[0].to_y;
+		(*game_data).from_x = potential_moves[0].from_x;
+		(*game_data).from_y = potential_moves[0].from_y;
+		(*game_data).to_x = potential_moves[0].to_x;
+		(*game_data).to_y = potential_moves[0].to_y;
 	}
 	else
 	{
 		srand(time(NULL));
 		move_index = rand()%(equal_moves_counter);
 		move_type = potential_moves[move_index].move_type;
-		from_x = potential_moves[move_index].from_x;
-		from_y = potential_moves[move_index].from_y;
-		to_x = potential_moves[move_index].to_x;
-		to_y = potential_moves[move_index].to_y;
+		(*game_data).from_x = potential_moves[move_index].from_x;
+		(*game_data).from_y = potential_moves[move_index].from_y;
+		(*game_data).to_x = potential_moves[move_index].to_x;
+		(*game_data).to_y = potential_moves[move_index].to_y;
 	}
 	return move_type;
 }
