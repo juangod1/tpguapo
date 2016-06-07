@@ -47,6 +47,7 @@ int menu()
 			case 3:
 				printf("Ingrese el nombre del archivo: ");
 				scanf("%s",file);
+				open_file(file);
 				if (getchar()!='\n') /* || (NO ENCUENTRA EL ARCHIVO) no se como pija lo vamos a hacer */ 
 				{
 					printf("Error al cargar (El archivo esta corrupto o no existe)\n");

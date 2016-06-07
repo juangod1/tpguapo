@@ -218,30 +218,28 @@ int get_Move_AI(char board[][BOARD_SIZE_MAX_X])
 	return move_type;
 }
 
-int open_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
+int open_file(char *filename)
 {
-	/* Necesito declarar todos los parametros de entrada? o por ser golbales no es necesario? */
+	int opcion, upnext; 
+	char board[30][30]={0};/* Esto es para que compile, despues hay que editarlo para la estructura*/
 	FILE * savefile;
-	savefile = fopen( filename, "r");
+	savefile = fopen(filename, "r");
 	if(savefile==NULL){
-		printf("error en la lectura del archivo");
 		return 1;
 	}
-	fread(&mode ,sizeof(int),1, savefile);
-	fread(&upnext ,sizeof(int),1, savefile);								
+	fread(&opcion ,sizeof(int),1, savefile);
+	fread(&upnext ,sizeof(int),1, savefile);
 	fread(&size_y ,sizeof(int),1, savefile);
 	fread(&size_x ,sizeof(int),1, savefile);
 	fread(board ,sizeof(char),900, savefile);
 	fclose (savefile);
 	return 0;
 }
-int save_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
+int save_file(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30])
 {
-	/* Necesito declarar todos los parametros de entrada? o por ser golbales no es necesario? */
 	FILE * savefile;
 	savefile = fopen( filename, "w");
 	if(savefile==NULL){
-		printf("no se pudo crear el archivo");
 		return 1;
 	}
 	fwrite(&mode ,sizeof(int),1, savefile);

@@ -15,6 +15,6 @@ void modify_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type,
 
 int get_Move_AI(char board[][BOARD_SIZE_MAX_X]);
 
-int open_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
+int open_file(char *filename);
 
-int save_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
+int save_file(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
