@@ -56,7 +56,6 @@ int initial_Turn(int mode)
 	int turn;
 	if ( mode != 3) /* NEWGAME */
 	{
-		srand(time(NULL));
 		turn = rand() % 2;
 	}
 
@@ -204,7 +203,6 @@ int get_Move_AI(game_data_type *game_data)
 	}
 	else
 	{
-		srand(time(NULL));
 		move_index = rand()%(equal_moves_counter);
 		move_type = potential_moves[move_index].move_type;
 		(*game_data).from_x = potential_moves[move_index].from_x;

@@ -3,6 +3,7 @@
 #include "blobsBack.h"
 #include "getnum.h"
 #include <string.h>
+#include <time.h>
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 #define CLEAR_GRAPHICS system("clear")
@@ -180,6 +181,7 @@ void game_Loop(game_data_type *game_data)
 			break;
 		}
 	}
+	display_Board(game_data);
 	printf("Felicitaciones jugador %d has ganado! \n",((*game_data).upnext%2+1));
 	printf("pulse ctrl+z para salir\n");
 	while(1);
@@ -187,7 +189,7 @@ void game_Loop(game_data_type *game_data)
 
 int main()
 {
-
+srand(time(NULL));
 game_data_type *game_data;
 game_data = malloc(sizeof(game_data_type));
 *game_data = {};
