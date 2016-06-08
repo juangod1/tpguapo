@@ -22,9 +22,4 @@ int get_Move_AI(game_data_type *game_data);
 
 int open_file(char *filename);
 
-<<<<<<< HEAD
 int save_file(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
-=======
-int save_File(char *filename, int mode,int upnext,int size_y, int size_x,char board[30][30]);
-
->>>>>>> structeado
