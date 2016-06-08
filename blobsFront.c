@@ -33,10 +33,9 @@ int menu(game_data_type *game_data)
 		}
 		switch(opcion){
 			case 1 ... 2:
-				(*game_data).size_y = 4;
-				printf("%d", (*game_data).size_y);
 				(*game_data).size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
 				(*game_data).size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
+				printf("%d, %d",game_data->size_y , game_data->size_x);
 				if (((*game_data).size_y>30)||((*game_data).size_y<5)||((*game_data).size_x<5)||((*game_data).size_x>30))
 					opcion = -1;
 				else
@@ -69,7 +68,7 @@ int get_Move(game_data_type *game_data)
 {
     char respuesta[20], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0;
-    display_Board( game_data );
+    display_Board(game_data);
     char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
         {
@@ -91,7 +90,7 @@ int get_Move(game_data_type *game_data)
                     cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_x, &(*game_data).from_y, &(*game_data).to_x, &(*game_data).to_y, &nuevalinea);
                     if(cantleido==5 && nuevalinea==10)
                     {
-                        if((tipoinput=check_Move((*game_data).from_x, (*game_data).from_y, (*game_data).to_x, (*game_data).to_y, (*game_data).board, (*game_data).upnext))==0)
+                        if(tipoinput=check_Move(game_data)==0)
                         {
                             display_Board( game_data );
                             printf("Error: Jugada Imposible\n");
@@ -109,8 +108,7 @@ int get_Move(game_data_type *game_data)
 
 
 void display_Board(game_data_type *game_data)
-{/* BORRAR COMENTARIO ANTES DE ENTREGA 
-El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
+{
 	int i,j,k=0;
 	CLEAR_GRAPHICS;
 	putchar('\n');
@@ -155,7 +153,7 @@ void game_Loop(game_data_type *game_data)
 	}
 	turn = initial_Turn((*game_data).mode);
 	(*game_data).upnext = (turn%2)+1;
-	while(!end_Game((*game_data).board, (*game_data).upnext, (*game_data).size_y, (*game_data).size_x))
+	while(1)//!end_Game(game_data))
 	{
 		if (((*game_data).mode==2)&&((*game_data).upnext==2))
 		{
@@ -186,10 +184,22 @@ void game_Loop(game_data_type *game_data)
 
 int main()
 {
+int i;
 
-game_data_type *game_data;
-game_data = malloc(sizeof(game_data_type));
-*game_data = {};
-game_data->mode = menu(game_data);
-game_Loop(game_data);
+game_data_type game_data;
+
+game_data.size_y=0;
+game_data.size_x=0;
+game_data.from_y=0;
+game_data.from_y=0;
+game_data.to_y=0;
+game_data.to_y=0;
+game_data.upnext=0;
+game_data.mode=0;
+char *aux = &game_data.board;
+for(i=0; i<900; i++)
+	aux[i]=0;
+
+game_data.mode = menu(&game_data);
+game_Loop(&game_data);
 }

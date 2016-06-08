@@ -8,11 +8,11 @@ typedef struct
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y];
 } game_data_type;
 
-int check_Move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext);
+int check_Move(game_data_type *game_data);
 
 int initial_Turn(int mode);
 
-int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext, int size_y, int size_x);
+int end_Game(game_data_type *game_data);
 
 void modify_Adjacent_Blocks(game_data_type *game_data);
 

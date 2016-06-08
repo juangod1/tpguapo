@@ -6,10 +6,10 @@
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
 
-int valid_Space(char board[][BOARD_SIZE_MAX_X], int size_y, int size_x, int i, int j)
+int valid_Space(game_data_type *game_data, int i, int j)
 {
 	int validity=0;
-	if((board[i][j] == 0) && (i<size_y) && (j<size_x) && (i>-1) && (j>-1))
+	if(((*game_data).board[i][j] == 0) && (i<(*game_data).size_y) && (j<(*game_data).size_x) && (i>-1) && (j>-1))
 		validity=1;
 	return validity;
 }
@@ -29,13 +29,13 @@ void modify_Adjacent_Blocks(game_data_type *game_data)
     }
 }
 
-int check_Move(int from_x, int from_y, int to_x, int to_y, char board[30][30], int upnext)
+int check_Move(game_data_type *game_data)
 {
 	int move_type; /* 0 si es invalida, 1 si es mitosis, 2 si es salto */
-	float distance, hip = (from_x-to_x)*(from_x-to_x)+(from_y-to_y)*(from_y-to_y);
+	float distance, hip = ((*game_data).from_x-(*game_data).to_x)*((*game_data).from_x-(*game_data).to_x)+((*game_data).from_y-(*game_data).to_y)*((*game_data).from_y-(*game_data).to_y);
 
 	distance = sqrt(hip);
-	if ( board[from_y][from_x] == ((upnext%2)?'A':'Z') )
+	if ( (*game_data).board[(*game_data).from_y][(*game_data).from_x] == (((*game_data).upnext%2)?'A':'Z') )
 	{
 		if ((distance==1)||((distance<=sqrt(2)+0.05) && (distance>= sqrt(2)-0.05)))  		/* Estoy chequeando que la distancia*/ 
 			move_type = 1;																	/*    sea la de un salto correcto   */
@@ -44,7 +44,8 @@ int check_Move(int from_x, int from_y, int to_x, int to_y, char board[30][30], i
 		else 
 			move_type = 0;
 
-		if ( !valid_Space(board, from_y, from_x, to_y, to_x) ) move_type = 0;
+		if ( !valid_Space(game_data, (*game_data).to_y, (*game_data).to_x))
+			move_type = 0;
 	}
 	else 
 		move_type = 0;
@@ -88,16 +89,16 @@ void modify_Board(game_data_type *game_data, int move_type)
 	modify_Adjacent_Blocks(game_data);
 }
 
-int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext, int size_y, int size_x)
+int end_Game(game_data_type *game_data)
 {
 	int i, j, k, l, aux_i, aux_j;
-	char target = ((upnext==1)?'A':'Z');
+	char target = (((*game_data).upnext==1)?'A':'Z');
 
-	for (i=0 ; i<size_y ; i++)
+	for (i=0 ; i<(*game_data).size_y ; i++)
 	{
-		for (j=0 ; j<size_x ; j++)
+		for (j=0 ; j<(*game_data).size_x ; j++)
 		{
-			if ( board[i][j] == target )
+			if ( (*game_data).board[i][j] == target )
 			{
 				for ( k=0 ; k<360 ; k+=45 )
 				{
@@ -106,7 +107,7 @@ int end_Game(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int upnext, int siz
 					for ( l=0 ; l<2 ; l++ )
 					{
 						direccion(k, &i, &j);
-						if ( valid_Space(board, size_y, size_x, i, j) ) 
+						if ( valid_Space(game_data, (*game_data).to_x, (*game_data).to_y)) 
 							return 0;
 					}
 					i = aux_i;
@@ -161,10 +162,9 @@ int get_Move_AI(game_data_type *game_data)
 					for ( l=0 ; l<2 ; l++ )
 					{
 						direccion(k, &aux_i, &aux_j);
-						if ( valid_Space((*game_data).board, (*game_data).size_y, (*game_data).size_x, aux_i, aux_j) )
+						if ( valid_Space(game_data, aux_i, aux_j) )
 						{
-							move_type = check_Move(j, i, aux_j, aux_i, (*game_data).board, (*game_data).upnext);
-
+							move_type = check_Move(game_data);
 							if (  ((capt_aux=check_Captures(i ,j, (*game_data).board)) == captures) )
 							{
 								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
