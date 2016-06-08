@@ -11,13 +11,9 @@
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
 
-void display_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X]);
+void display_Board(game_data_type *game_data);
 
-void modify_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X], int move_type, int upnext);
-
-int size_x, size_y, from_x, from_y, to_x, to_y;
-
-int menu()
+int menu(game_data_type *game_data)
 {
 	int menu_state=1, opcion=0;
 	char file[]={};
@@ -37,9 +33,11 @@ int menu()
 		}
 		switch(opcion){
 			case 1 ... 2:
-				size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
-				size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
-				if ((size_y>30)||(size_y<5)||(size_x<5)||(size_x>30))
+				(*game_data).size_y = 4;
+				printf("%d", (*game_data).size_y);
+				(*game_data).size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
+				(*game_data).size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
+				if (((*game_data).size_y>30)||((*game_data).size_y<5)||((*game_data).size_x<5)||((*game_data).size_x>30))
 					opcion = -1;
 				else
 					menu_state = 0;	
@@ -65,18 +63,18 @@ int menu()
 				break;
 			}
 	}
-	return opcion;
+	return (*game_data).mode = opcion;
 }
 
-int get_Move(int upnext, char board[][BOARD_SIZE_MAX_X])
+int get_Move(game_data_type *game_data)
 {
     char respuesta[20], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0;
-    display_Board(board);
+    display_Board( game_data );
     char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
         {
-            printf("Turno de Jugador %d\n", upnext);
+            printf("Turno de Jugador %d\n", (*game_data).upnext);
             fgets(respuesta, 15, stdin);
             if((cantleido=(sscanf(respuesta, "save %s%c", filename, &nuevalinea)))==2 && nuevalinea=='\n')
                 	estado=1;
@@ -91,18 +89,18 @@ int get_Move(int upnext, char board[][BOARD_SIZE_MAX_X])
                     tipoinput=4;
                     break;
                 default:
-                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &from_x, &from_y, &to_x, &to_y, &nuevalinea);
+                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_x, &(*game_data).from_y, &(*game_data).to_x, &(*game_data).to_y, &nuevalinea);
                     if(cantleido==5 && nuevalinea==10)
                     {
-                        if((tipoinput=check_Move(from_x, from_y, to_x, to_y, board, upnext))==0)
+                        if((tipoinput=check_Move((*game_data).from_x, (*game_data).from_y, (*game_data).to_x, (*game_data).to_y, (*game_data).board, (*game_data).upnext))==0)
                         {
-                            display_Board(board);
+                            display_Board( game_data );
                             printf("Error: Jugada Imposible\n");
                         }
                     }
                     else
                     {
-                    	display_Board(board);
+                    	display_Board( game_data );
                         printf("Error: Lectura de parametros incorrectos\n");
            			}
            	}
@@ -111,23 +109,23 @@ int get_Move(int upnext, char board[][BOARD_SIZE_MAX_X])
 }
 
 
-void display_Board(char board[BOARD_SIZE_MAX_Y][BOARD_SIZE_MAX_X])
+void display_Board(game_data_type *game_data)
 {/* BORRAR COMENTARIO ANTES DE ENTREGA 
 El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
 	int i,j,k=0;
 	CLEAR_GRAPHICS;
 	putchar('\n');
-	for ( i=0 ; i<size_y ; i++ )
+	for ( i=0 ; i<(*game_data).size_y ; i++ )
 	{
 		if (i<10) printf("%d ",k++);
 		else printf("%d",k++);
 		putchar('|');
-		for ( j=0 ; j<size_x ; j++ )
+		for ( j=0 ; j<(*game_data).size_x ; j++ )
 		{
-			if (board[i][j] == 0)
-				printf("%c |", board[i][j]);
+			if ((*game_data).board[i][j] == 0)
+				printf("%c |", (*game_data).board[i][j]);
 			else 
-				printf("%c|", board[i][j]);
+				printf("%c|", (*game_data).board[i][j]);
 		}
 		putchar('\n');
 	}
@@ -140,38 +138,38 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 	putchar('\n');
 }
 
-void game_Loop(int mode)
+void game_Loop(game_data_type *game_data)
 {
-	int upnext, turn, move_type;
-	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y]={};
-	switch(mode)
+	int turn, move_type;
+
+	switch((*game_data).mode)
 	{
 		case NEWGAMEPVP ... NEWGAMEPVAI:
-			board[0][0]= 'A';
-			board[size_y-1][0]= 'A';
-			board[0][size_x-1]= 'Z';
-			board[size_y-1][size_x-1]= 'Z';	
+			(*game_data).board[0][0]= 'A';
+			(*game_data).board[(*game_data).size_y-1][0]= 'A';
+			(*game_data).board[0][(*game_data).size_x-1]= 'Z';
+			(*game_data).board[(*game_data).size_y-1][(*game_data).size_x-1]= 'Z';	
 			break;
 		case CONTINUEGAME:
 			break;
 		
 	}
-	turn = initial_Turn(mode);
-	upnext = (turn%2)+1;
-	while(!end_Game(board, upnext))
+	turn = initial_Turn((*game_data).mode);
+	(*game_data).upnext = (turn%2)+1;
+	while(!end_Game((*game_data).board, (*game_data).upnext, (*game_data).size_y, (*game_data).size_x))
 	{
-		if ((mode==2)&&(upnext==2))
+		if (((*game_data).mode==2)&&((*game_data).upnext==2))
 		{
-			move_type = get_Move_AI(board);
+			move_type = get_Move_AI(game_data);
 			system("sleep 1");
 		}
 		else
-			move_type = get_Move(upnext, board);
+			move_type = get_Move(game_data);
 		switch(move_type)
 		{
 		case 1 ... 2: 
-			modify_Board(board, move_type, upnext);
-			upnext = (++turn%2)+1;
+			modify_Board(game_data, move_type);
+			(*game_data).upnext = (++turn%2)+1;
 			break;
 		case 3:
 			printf("saving...\n");
@@ -182,14 +180,17 @@ void game_Loop(int mode)
 			break;
 		}
 	}
-	printf("Felicitaciones jugador %d has ganado! \n",(upnext%2+1));
+	printf("Felicitaciones jugador %d has ganado! \n",((*game_data).upnext%2+1));
 	printf("pulse ctrl+z para salir\n");
 	while(1);
 }
 
 int main()
 {
-int option = menu();
-game_Loop(option);
 
+game_data_type *game_data;
+game_data = malloc(sizeof(game_data_type));
+*game_data = {};
+game_data->mode = menu(game_data);
+game_Loop(game_data);
 }
