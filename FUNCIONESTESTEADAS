@@ -76,3 +76,19 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 		}
 	putchar('\n');
 }
+
+int initial_Turn(game_data_type *game_data)
+{
+	int turn;
+	if ( (*game_data).mode != 3) /* NEWGAME */
+	{
+		turn = rand() % 2;
+	}
+
+	else /* CONTINUE */
+	{
+
+	}
+
+	return turn;
+}
