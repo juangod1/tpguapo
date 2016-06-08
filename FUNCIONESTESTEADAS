@@ -48,3 +48,31 @@ int menu(game_data_type *game_data)
 	return (*game_data).mode = opcion;
 }
 
+void display_Board(game_data_type *game_data)
+{/* BORRAR COMENTARIO ANTES DE ENTREGA 
+El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
+	int i,j,k=0;
+	CLEAR_GRAPHICS;
+	putchar('\n');
+	for ( i=0 ; i<(*game_data).size_y ; i++ )
+	{
+		if (i<10) printf("%d ",k++);
+		else printf("%d",k++);
+		putchar('|');
+		for ( j=0 ; j<(*game_data).size_x ; j++ )
+		{
+			if ((*game_data).board[i][j] == 0)
+				printf("%c |", (*game_data).board[i][j]);
+			else 
+				printf("%c|", (*game_data).board[i][j]);
+		}
+		putchar('\n');
+	}
+	printf("   ");
+	for (i=0;i!=k;i++)
+		{
+			if (i<10) printf("%d ",i);
+			else printf("%d",i);
+		}
+	putchar('\n');
+}
