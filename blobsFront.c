@@ -33,6 +33,8 @@ int menu(game_data_type *game_data)
 		}
 		switch(opcion){
 			case 1 ... 2:
+				(*game_data).size_y = 4;
+				printf("%d", (*game_data).size_y);
 				(*game_data).size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
 				(*game_data).size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
 				if (((*game_data).size_y>30)||((*game_data).size_y<5)||((*game_data).size_x<5)||((*game_data).size_x>30))
@@ -185,7 +187,9 @@ void game_Loop(game_data_type *game_data)
 int main()
 {
 
-game_data_type *game_data = {0};
+game_data_type *game_data;
+game_data = malloc(sizeof(game_data_type));
+*game_data = {};
 game_data->mode = menu(game_data);
 game_Loop(game_data);
 }

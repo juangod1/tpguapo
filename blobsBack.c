@@ -84,8 +84,7 @@ void modify_Board(game_data_type *game_data, int move_type)
 {
 	char character = ((((*game_data).upnext)%2)?'A':'Z');
 	(*game_data).board[(*game_data).to_y][(*game_data).to_x] = character;
-	if (move_type==2)
-		(*game_data).board[(*game_data).from_y][(*game_data).from_x] = 0;
+	if (move_type==2) (*game_data).board[(*game_data).from_y][(*game_data).from_x] = 0;
 	modify_Adjacent_Blocks(game_data);
 }
 
