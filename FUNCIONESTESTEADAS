@@ -1,3 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "blobsBack.h"
+#include "getnum.h"
+#include <string.h>
+#include <math.h>
+#include <time.h>
+#define BOARD_SIZE_MAX_Y 30
+#define BOARD_SIZE_MAX_X 30
+#define CLEAR_GRAPHICS system("clear")
+#define BORRA_BUFFER while (getchar() != '\n')
+#define NEWGAMEPVP 1
+#define NEWGAMEPVAI 2
+#define CONTINUEGAME 3
+
+int open_File(char *filename, game_data_type *game_data)
+{
+	int i,j;
+	FILE * savefile;
+	savefile = fopen( filename, "r");
+	if(savefile==NULL){
+		printf("error en la lectura del archivo");
+		return 1;
+	}
+	fread(&game_data->mode ,sizeof(int),1, savefile);
+	fread(&game_data->upnext ,sizeof(int),1, savefile);								
+	fread(&game_data->size_y ,sizeof(int),1, savefile);
+	fread(&game_data->size_x ,sizeof(int),1, savefile);
+	for(i=0;i<BOARD_SIZE_MAX_Y;i++){
+		for(j=0;j<BOARD_SIZE_MAX_Y;j++){
+			fread(&game_data->board[i][j] ,sizeof(char),1, savefile);
+		}
+	}
+	fclose (savefile);
+	return 0;
+}
+
+int save_File(char *filename, game_data_type * game_data)
+{
+	int i,j;
+	FILE * savefile;
+	savefile = fopen( filename, "w");
+	if(savefile==NULL){
+		return 1;
+	}
+	fwrite(&(game_data->mode) ,sizeof(int),1, savefile);
+	fwrite(&(game_data->upnext) ,sizeof(int),1, savefile);
+	fwrite(&(game_data->size_y) ,sizeof(int),1, savefile);
+	fwrite(&(game_data->size_x) ,sizeof(int),1, savefile);
+	for(i=0;i<game_data->size_y;i++)
+	{
+		for(j=0;j<game_data->size_x;j++)
+		{
+			fwrite(&game_data->board[i][j] ,sizeof(char),1, savefile);
+		}
+	}
+	fclose (savefile);
+	return 0;
+}
+
 int menu(game_data_type *game_data)
 {
 	int menu_state=1, opcion=0;
@@ -205,6 +265,11 @@ game_data.mode=0;
 char *aux = &game_data.board;
 for(i=0; i<900; i++)
 	aux[i]=0;
+
+
+
+game_data.mode = menu(&game_data);
+game_Loop(&game_data);
 
 }
 
