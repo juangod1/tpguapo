@@ -48,9 +48,31 @@ int menu(game_data_type *game_data)
 	return (*game_data).mode = opcion;
 }
 
+void modify_Adjacent_Blocks(game_data_type *game_data)
+{
+    int i=(*game_data).to_x-1, j=(*game_data).to_y-1, auxj;
+    i=((i<0)?(0):(i));
+    auxj=((j<0)?(0):(j));
+    for(i=i; i<=(*game_data).to_x+1; i++)
+    {
+        for(j=auxj; j<=(*game_data).to_y+1; j++)
+        {
+            if((*game_data).board[j][i]!=0 && j<=(*game_data).size_y && i<=(*game_data).size_x)
+                (*game_data).board[j][i]=(*game_data).board[(*game_data).to_y][(*game_data).to_x];
+        }
+    }
+}
+
+void modify_Board(game_data_type *game_data, int move_type)
+{
+	char character = ((((*game_data).upnext)%2)?'A':'Z');
+	(*game_data).board[(*game_data).to_y][(*game_data).to_x] = character;
+	if (move_type==2) (*game_data).board[(*game_data).from_y][(*game_data).from_x] = 0;
+	modify_Adjacent_Blocks(game_data);
+}
+
 void display_Board(game_data_type *game_data)
-{/* BORRAR COMENTARIO ANTES DE ENTREGA 
-El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
+{
 	int i,j,k=0;
 	CLEAR_GRAPHICS;
 	putchar('\n');
@@ -76,7 +98,6 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 		}
 	putchar('\n');
 }
-
 int initial_Turn(game_data_type *game_data)
 {
 	int turn;
