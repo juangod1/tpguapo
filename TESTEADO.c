@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "TESTEADO.h"
 #include "getnum.h"
 #include <string.h>
-#include "TESTEADO.h"
 #include <math.h>
 #include <time.h>
 #define BOARD_SIZE_MAX_Y 30
@@ -60,18 +60,6 @@ int save_File(char *filename, game_data_type * game_data)
 	return 0;
 }
 
-void direccion(int ang, int *i, int *j)
-{
-	if (ang == 0) {*j+=1;}
-	else if (ang == 45)  {*j+=1; *i-=1;}
-	else if (ang == 90)  {*i-=1;}
-	else if (ang == 135) {*j-=1; *i-=1;}
-	else if (ang == 180) {*j-=1;}
-	else if (ang == 225) {*j-=1; *i+=1;}
-	else if (ang == 270) {*i+=1;}
-	else if (ang == 315) {*j+=1; *i+=1;}
-}
-
 int menu(game_data_type *game_data)
 {
 	int menu_state=1, opcion=0;
@@ -122,6 +110,18 @@ int menu(game_data_type *game_data)
 	return (*game_data).mode = opcion;
 }
 
+void direccion(int ang, int *i, int *j)
+{
+	if (ang == 0) {*j+=1;}
+	else if (ang == 45)  {*j+=1; *i-=1;}
+	else if (ang == 90)  {*i-=1;}
+	else if (ang == 135) {*j-=1; *i-=1;}
+	else if (ang == 180) {*j-=1;}
+	else if (ang == 225) {*j-=1; *i+=1;}
+	else if (ang == 270) {*i+=1;}
+	else if (ang == 315) {*j+=1; *i+=1;}
+}
+
 void modify_Adjacent_Blocks(game_data_type *game_data)
 {
     int i=(*game_data).to_x-1, j=(*game_data).to_y-1, auxj;
@@ -136,7 +136,6 @@ void modify_Adjacent_Blocks(game_data_type *game_data)
         }
     }
 }
-
 typedef struct 
 {
 	int move_type;
@@ -430,5 +429,3 @@ game_data.mode = menu(&game_data);
 game_Loop(&game_data);
 
 }
-
-
