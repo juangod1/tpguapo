@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "blobsBack.h"
 #include "getnum.h"
 #include <string.h>
+#include "TESTEADO.h"
 #include <math.h>
 #include <time.h>
 #define BOARD_SIZE_MAX_Y 30
@@ -12,6 +12,8 @@
 #define NEWGAMEPVP 1
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
+
+void display_Board(game_data_type *game_data);
 
 int open_File(char *filename, game_data_type *game_data)
 {
@@ -56,6 +58,18 @@ int save_File(char *filename, game_data_type * game_data)
 	}
 	fclose (savefile);
 	return 0;
+}
+
+void direccion(int ang, int *i, int *j)
+{
+	if (ang == 0) {*j+=1;}
+	else if (ang == 45)  {*j+=1; *i-=1;}
+	else if (ang == 90)  {*i-=1;}
+	else if (ang == 135) {*j-=1; *i-=1;}
+	else if (ang == 180) {*j-=1;}
+	else if (ang == 225) {*j-=1; *i+=1;}
+	else if (ang == 270) {*i+=1;}
+	else if (ang == 315) {*j+=1; *i+=1;}
 }
 
 int menu(game_data_type *game_data)
@@ -122,6 +136,12 @@ void modify_Adjacent_Blocks(game_data_type *game_data)
         }
     }
 }
+
+typedef struct 
+{
+	int move_type;
+	int from_x, from_y, to_x, to_y;
+} potential_move;
 
 int get_Move_AI(game_data_type *game_data)
 {
