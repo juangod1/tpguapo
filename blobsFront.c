@@ -12,8 +12,6 @@
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
 
-void display_Board(game_data_type *game_data);
-
 int menu(game_data_type *game_data)
 {
 	int menu_state=1, opcion=0;
@@ -34,8 +32,6 @@ int menu(game_data_type *game_data)
 		}
 		switch(opcion){
 			case 1 ... 2:
-				(*game_data).size_y = 4;
-				printf("%d", (*game_data).size_y);
 				(*game_data).size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
 				(*game_data).size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
 				if (((*game_data).size_y>30)||((*game_data).size_y<5)||((*game_data).size_x<5)||((*game_data).size_x>30))
@@ -46,7 +42,6 @@ int menu(game_data_type *game_data)
 			case 3:
 				printf("Ingrese el nombre del archivo: ");
 				scanf("%s",file);
-				open_file(file);
 				if (getchar()!='\n') /* || (NO ENCUENTRA EL ARCHIVO) no se como pija lo vamos a hacer */ 
 				{
 					printf("Error al cargar (El archivo esta corrupto o no existe)\n");
@@ -67,52 +62,8 @@ int menu(game_data_type *game_data)
 	return (*game_data).mode = opcion;
 }
 
-int get_Move(game_data_type *game_data)
-{
-    char respuesta[20], nuevalinea;
-    int cantleido=0, estado=0, tipoinput=0;
-    display_Board( game_data );
-    char *filename=malloc(15*sizeof(char));
-    while(tipoinput==0)
-        {
-            printf("Turno de Jugador %d\n", (*game_data).upnext);
-            fgets(respuesta, 15, stdin);
-            if((cantleido=(sscanf(respuesta, "save %s%c", filename, &nuevalinea)))==2 && nuevalinea=='\n')
-                	estado=1;
-            if(strcmp("exit\n",respuesta)==0)
-                estado=2;
-            switch(estado)
-            {
-                case 1:
-                    tipoinput=3;
-                    break;
-                case 2:
-                    tipoinput=4;
-                    break;
-                default:
-                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_x, &(*game_data).from_y, &(*game_data).to_x, &(*game_data).to_y, &nuevalinea);
-                    if(cantleido==5 && nuevalinea==10)
-                    {
-                        if((tipoinput=check_Move((*game_data).from_x, (*game_data).from_y, (*game_data).to_x, (*game_data).to_y, (*game_data).board, (*game_data).upnext))==0)
-                        {
-                            display_Board( game_data );
-                            printf("Error: Jugada Imposible\n");
-                        }
-                    }
-                    else
-                    {
-                    	display_Board( game_data );
-                        printf("Error: Lectura de parametros incorrectos\n");
-           			}
-           	}
-        }
-        return tipoinput;
-}
-
-
 void display_Board(game_data_type *game_data)
-{/* BORRAR COMENTARIO ANTES DE ENTREGA 
-El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar conflicto de norma IH, tamaño verdadero es una variable global (size_y , size_x) */	
+{
 	int i,j,k=0;
 	CLEAR_GRAPHICS;
 	putchar('\n');
@@ -139,9 +90,52 @@ El tablero lo vamos a definir siempre con el tamaño maximo (30) para evitar con
 	putchar('\n');
 }
 
-void game_Loop(game_data_type *game_data)
+int get_Move(game_data_type *game_data)
 {
-	int turn, move_type;
+    char respuesta[20], nuevalinea;
+    int cantleido=0, estado=0, tipoinput=0;
+    display_Board(game_data);
+    char *filename=malloc(15*sizeof(char));
+    while(tipoinput==0)
+        {
+            printf("Turno de Jugador %d\n", (*game_data).upnext);
+            fgets(respuesta, 15, stdin);
+            if((cantleido=(sscanf(respuesta, "save %s%c", filename, &nuevalinea)))==2 && nuevalinea=='\n')
+                	estado=1;
+            if(strcmp("exit\n",respuesta)==0)
+                estado=2;
+            switch(estado)
+            {
+                case 1:
+                    tipoinput=3;
+                    break;
+                case 2:
+                    tipoinput=4;
+                    break;
+                default:
+                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_x, &(*game_data).from_y, &(*game_data).to_x, &(*game_data).to_y, &nuevalinea);
+                    if(cantleido==5 && nuevalinea==10)
+                    {
+                        if((tipoinput=check_Move(game_data))==0)
+                        {
+                            display_Board( game_data );
+                            printf("Error: Jugada Imposible\n");
+                        }
+                    }
+                    else
+                    {
+                    	display_Board( game_data );
+                        printf("Error: Lectura de parametros incorrectos\n");
+           			}
+           	}
+        }
+        return tipoinput;
+}
+
+
+void game_Loop(game_data_type *game_data)					
+{
+	int turn, move_type, termino=0;
 
 	switch((*game_data).mode)
 	{
@@ -155,10 +149,11 @@ void game_Loop(game_data_type *game_data)
 			break;
 		
 	}
-	turn = initial_Turn((*game_data).mode);
+	turn = initial_Turn(game_data);
 	(*game_data).upnext = (turn%2)+1;
-	while(!end_Game((*game_data).board, (*game_data).upnext, (*game_data).size_y, (*game_data).size_x))
+	while(!termino)
 	{
+		display_Board(game_data);
 		if (((*game_data).mode==2)&&((*game_data).upnext==2))
 		{
 			move_type = get_Move_AI(game_data);
@@ -180,19 +175,25 @@ void game_Loop(game_data_type *game_data)
 			exit(0);
 			break;
 		}
+		termino=end_Game(game_data);
+		display_Board(game_data);
 	}
-	display_Board(game_data);
-	printf("Felicitaciones jugador %d has ganado! \n",((*game_data).upnext%2+1));
-	printf("pulse ctrl+z para salir\n");
-	while(1);
+	if(termino==3)
+	    printf("El juego ha terminado en un empate!");
+	else
+	    printf("Felicitaciones jugador %d has ganado! \n",termino);
+	printf("Oprima 'enter' para salir\n");
+	getchar();
+	CLEAR_GRAPHICS;
 }
 
 int main()
 {
-srand(time(NULL));
-game_data_type *game_data;
-game_data = malloc(sizeof(game_data_type));
-*game_data = {};
-game_data->mode = menu(game_data);
-game_Loop(game_data);
+	int i;
+
+	srand(time(NULL));
+	game_data_type game_data = {0};
+	game_data.mode = menu(&game_data);
+	game_Loop(&game_data);
+
 }
