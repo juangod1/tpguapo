@@ -17,21 +17,22 @@ int open_File(char *filename, game_data_type *game_data)
 	FILE * savefile;
 	savefile = fopen( filename, "r");
 	if(savefile==NULL){
-		printf("error en la lectura del archivo");
 		return 1;
 	}
 	fread(&game_data->mode ,sizeof(int),1, savefile);
 	fread(&game_data->upnext ,sizeof(int),1, savefile);								
 	fread(&game_data->size_y ,sizeof(int),1, savefile);
 	fread(&game_data->size_x ,sizeof(int),1, savefile);
-	for(i=0;i<BOARD_SIZE_MAX_Y;i++){
-		for(j=0;j<BOARD_SIZE_MAX_Y;j++){
-			fread(&game_data->board[i][j] ,sizeof(char),1, savefile);
-		}
+	for(i=0;i<(game_data->size_y);i++)
+	{
+	
+		fread(game_data->board[i] ,game_data->size_x,1, savefile);
+	
 	}
 	fclose (savefile);
 	return 0;
 }
+
 int save_File(char *filename, game_data_type * game_data)
 {
 	int i,j;
@@ -44,16 +45,17 @@ int save_File(char *filename, game_data_type * game_data)
 	fwrite(&(game_data->upnext) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->size_y) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->size_x) ,sizeof(int),1, savefile);
-	for(i=0;i<game_data->size_y;i++)
+	for(i=0;i<(game_data->size_y);i++)
 	{
-		for(j=0;j<game_data->size_x;j++)
-		{
-			fwrite(&game_data->board[i][j] ,sizeof(char),1, savefile);
-		}
+	
+	fwrite(game_data->board[i] ,game_data->size_x,1, savefile);
+	
 	}
 	fclose (savefile);
+
 	return 0;
 }
+
 void direccion(int ang, int *i, int *j)
 {
 	if (ang == 0) {*j+=1;}
@@ -183,20 +185,9 @@ void modify_Board(game_data_type *game_data, int move_type)
 	modify_Adjacent_Blocks(game_data);
 }
 
-int initial_Turn(game_data_type *game_data)
+int initial_Turn(void)
 {
-	int turn=0;
-	if ( (*game_data).mode != 3) /* NEWGAME */
-	{
-		turn=(rand()%2);
-	}
-
-	else /* CONTINUE */
-	{
-
-	}
-
-	return turn;
+	return (rand()%2);
 }
 
 int valid_Space(game_data_type *game_data, int i, int j)
@@ -261,7 +252,6 @@ void fill_Blocks(game_data_type *game_data)
 {
 	int i, j;
     char player = ((*game_data).upnext==1?'Z':'A');
-    printf("%c", player);
     for (i=0 ; i<(*game_data).size_y ; i++)
 	{
 		for (j=0 ; j<(*game_data).size_x ; j++)

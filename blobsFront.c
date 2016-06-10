@@ -12,10 +12,11 @@
 #define NEWGAMEPVAI 2
 #define CONTINUEGAME 3
 
-int menu(game_data_type *game_data)
+char* menu(game_data_type *game_data)
 {
-	int menu_state=1, opcion=0;
-	char file[]={};
+	int menu_state=1, opcion=0, c,checkopen, cantleido;
+	char file_stdin[20], nuevalinea;
+	char * file = malloc(17*sizeof(char));
 	while(menu_state)
 	{
 		CLEAR_GRAPHICS;
@@ -40,15 +41,19 @@ int menu(game_data_type *game_data)
 					menu_state = 0;	
 				break;	
 			case 3:
-				printf("Ingrese el nombre del archivo: ");
-				scanf("%s",file);
-				if (getchar()!='\n') /* || (NO ENCUENTRA EL ARCHIVO) no se como pija lo vamos a hacer */ 
-				{
+				printf("Ingrese el nombre del archivo (max 15 caracteres): ");
+				fgets(file_stdin, 17, stdin);
+            	if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
+            	{
+					if (open_File(file,game_data)==0) 
+					{	
+						menu_state = 0;	
+					}
+				}
+				else {
 					printf("Error al cargar (El archivo esta corrupto o no existe)\n");
 					opcion = -1;
-				}
-				else 
-					menu_state = 0;	
+					}
 				break;
 			case 4:
 				CLEAR_GRAPHICS;
@@ -59,7 +64,11 @@ int menu(game_data_type *game_data)
 				break;
 			}
 	}
-	return (*game_data).mode = opcion;
+	(*game_data).mode = opcion;
+	if ( opcion == 3)
+		return file;
+	else 
+		return NULL;
 }
 
 void display_Board(game_data_type *game_data)
@@ -94,12 +103,11 @@ int get_Move(game_data_type *game_data)
 {
     char respuesta[20], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0;
-    display_Board(game_data);
     char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
         {
             printf("Turno de Jugador %d\n", (*game_data).upnext);
-            fgets(respuesta, 15, stdin);
+            fgets(respuesta, 21, stdin);
             if((cantleido=(sscanf(respuesta, "save %s%c", filename, &nuevalinea)))==2 && nuevalinea=='\n')
                 	estado=1;
             if(strcmp("exit\n",respuesta)==0)
@@ -107,11 +115,20 @@ int get_Move(game_data_type *game_data)
             switch(estado)
             {
                 case 1:
+                if (save_File(filename,game_data)==1) 
+				{
+					printf("Error al guardar)\n");
+					
+				}
+				else 
+					save_File(filename,game_data);
+
                     tipoinput=3;
                     break;
                 case 2:
                     tipoinput=4;
                     break;
+
                 default:
                     cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_x, &(*game_data).from_y, &(*game_data).to_x, &(*game_data).to_y, &nuevalinea);
                     if(cantleido==5 && nuevalinea==10)
@@ -133,7 +150,7 @@ int get_Move(game_data_type *game_data)
 }
 
 
-void game_Loop(game_data_type *game_data)					
+void game_Loop(game_data_type *game_data, char *archivo)					
 {
 	int turn, move_type, termino=0;
 
@@ -149,7 +166,7 @@ void game_Loop(game_data_type *game_data)
 			break;
 		
 	}
-	turn = initial_Turn(game_data);
+	turn = initial_Turn();
 	(*game_data).upnext = (turn%2)+1;
 	while(!termino)
 	{
@@ -175,9 +192,11 @@ void game_Loop(game_data_type *game_data)
 			exit(0);
 			break;
 		}
-		termino=end_Game(game_data);
 		display_Board(game_data);
+		termino=end_Game(game_data);
 	}
+	system("sleep 1");
+	display_Board(game_data);
 	if(termino==3)
 	    printf("El juego ha terminado en un empate!");
 	else
@@ -193,7 +212,8 @@ int main()
 
 	srand(time(NULL));
 	game_data_type game_data = {0};
-	game_data.mode = menu(&game_data);
-	game_Loop(&game_data);
+
+	char *archivo = menu(&game_data);
+	game_Loop(&game_data,archivo);
 
 }

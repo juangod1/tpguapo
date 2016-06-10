@@ -12,7 +12,7 @@ typedef struct
 } game_data_type;
 
 int check_Move(game_data_type *game_data);
-int initial_Turn(game_data_type *game_data);
+int initial_Turn(void);
 void modify_Board(game_data_type *game_data, int move_type);
 int get_Move_AI(game_data_type *game_data);
 int save_File(char *filename, game_data_type * game_data);
