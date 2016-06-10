@@ -248,7 +248,7 @@ void modify_Board(game_data_type *game_data, int move_type)
 void display_Board(game_data_type *game_data)
 {
 	int i,j,k=0;
-	//CLEAR_GRAPHICS;
+	CLEAR_GRAPHICS;
 	putchar('\n');
 	for ( i=0 ; i<(*game_data).size_y ; i++ )
 	{
