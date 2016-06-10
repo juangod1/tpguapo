@@ -14,6 +14,11 @@
 #define CONTINUEGAME 3
 
 void display_Board(game_data_type *game_data);
+int valid_Space(game_data_type *game_data, int i, int j);
+int check_Move(game_data_type *game_data);
+int check_Captures(game_data_type *game_data, int i, int j);
+void fill_Blocks(game_data_type *game_data);
+int count_Blocks(game_data_type *game_data);
 
 int open_File(char *filename, game_data_type *game_data)
 {
@@ -243,7 +248,7 @@ void modify_Board(game_data_type *game_data, int move_type)
 void display_Board(game_data_type *game_data)
 {
 	int i,j,k=0;
-	CLEAR_GRAPHICS;
+	//CLEAR_GRAPHICS;
 	putchar('\n');
 	for ( i=0 ; i<(*game_data).size_y ; i++ )
 	{
@@ -269,10 +274,10 @@ void display_Board(game_data_type *game_data)
 }
 int initial_Turn(game_data_type *game_data)
 {
-	int turn;
+	int turn=0;
 	if ( (*game_data).mode != 3) /* NEWGAME */
 	{
-		turn = rand() % 2;
+		turn=(rand()%2);
 	}
 
 	else /* CONTINUE */
@@ -357,9 +362,72 @@ int get_Move(game_data_type *game_data)
         return tipoinput;
 }
 
-void game_Loop(game_data_type *game_data)
+int end_Game(game_data_type *game_data)
 {
-	int turn, move_type;
+	int i, j, aux_j, aux_i, l, k;
+    char player= ((*game_data).upnext==1)?'A':'Z';
+    
+    for (i=0 ; i<(*game_data).size_y ; i++)
+	{
+		for (j=0 ; j<(*game_data).size_x ; j++)
+		{
+		    if((*game_data).board[i][j]==player)
+		    {
+		        aux_i=i;
+		        aux_j=j;
+		        for ( k=0 ; k<360 ; k+=45 )
+		        {
+		      		for(l=0; l<2; l++)
+		      		{
+		           		direccion(k, &aux_i, &aux_j);
+		            	if( valid_Space(game_data, aux_i, aux_j) )
+		                	return 0;
+		        	}
+		        }
+		    }
+		}
+	}
+	fill_Blocks(game_data);
+	return count_Blocks(game_data);
+}
+
+void fill_Blocks(game_data_type *game_data)
+{
+	int i, j;
+    char player = ((*game_data).upnext==1?'Z':'A');
+    printf("%c", player);
+    for (i=0 ; i<(*game_data).size_y ; i++)
+	{
+		for (j=0 ; j<(*game_data).size_x ; j++)
+		{
+		    if((*game_data).board[i][j]==0)
+		        (*game_data).board[i][j]=player;
+		}
+	} 
+}
+
+int count_Blocks(game_data_type *game_data)
+{
+	int i, j, contador1=0, contador2=0;
+    for (i=0 ; i<(*game_data).size_y ; i++)
+	{
+		for (j=0 ; j<(*game_data).size_x ; j++)
+		{
+		    if((*game_data).board[i][j]=='A')
+		        contador1++;
+		    else
+		        contador2++;
+		}
+	}
+	if(contador1==contador2)
+	    return 3;
+    else
+        return ((contador1>contador2)?1:2);
+}
+
+void game_Loop(game_data_type *game_data)					
+{
+	int turn, move_type, termino=0;
 
 	switch((*game_data).mode)
 	{
@@ -375,7 +443,7 @@ void game_Loop(game_data_type *game_data)
 	}
 	turn = initial_Turn(game_data);
 	(*game_data).upnext = (turn%2)+1;
-	while(1)
+	while(!termino)
 	{
 		if (((*game_data).mode==2)&&((*game_data).upnext==2))
 		{
@@ -398,15 +466,20 @@ void game_Loop(game_data_type *game_data)
 			exit(0);
 			break;
 		}
+		termino=end_Game(game_data);
 	}
 	display_Board(game_data);
-	printf("Felicitaciones jugador %d has ganado! \n",((*game_data).upnext%2+1));
-	printf("pulse ctrl+z para salir\n");
-	while(1);
+	if(termino==3)
+	    printf("El juego ha terminado en un empate!");
+	else
+	    printf("Felicitaciones jugador %d has ganado! \n",termino);
+	printf("Oprima 'enter' para salir\n");
+	getchar();
 }
 
 int main()
 {
+srand(time(NULL));
 int i;
 
 game_data_type game_data;
