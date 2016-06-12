@@ -14,7 +14,7 @@
 
 char* menu(game_data_type *game_data)
 {
-	int menu_state=1, opcion=0, c,checkopen, cantleido;
+	int menu_state=1, opcion=0, cantleido;
 	char file_stdin[20], nuevalinea;
 	char * file = malloc(17*sizeof(char));
 	while(menu_state)
@@ -152,7 +152,7 @@ int get_Move(game_data_type *game_data)
 
 void game_Loop(game_data_type *game_data, char *archivo)					
 {
-	int turn, move_type, termino=0;
+	int move_type, cargo=0, guardado=0, termino=0;
 
 	switch((*game_data).mode)
 	{
@@ -163,14 +163,27 @@ void game_Loop(game_data_type *game_data, char *archivo)
 			(*game_data).board[(*game_data).size_y-1][(*game_data).size_x-1]= 'Z';	
 			break;
 		case CONTINUEGAME:
+			cargo=1;
+			(*game_data).upnext--;
+			open_File(archivo, game_data);
 			break;
 		
 	}
-	turn = initial_Turn();
-	(*game_data).upnext = (turn%2)+1;
+	if(cargo==0)
+	{
+		(*game_data).upnext = initial_Turn();
+		(*game_data).upnext = (((*game_data).upnext)%2)+1;
+	}
 	while(!termino)
 	{
 		display_Board(game_data);
+		if(guardado==1)
+		{
+			guardado=0;
+			printf("El archivo fue guardado con exito, oprima 'enter' para continuar.\n");
+			if(getchar()!='\n')
+				BORRA_BUFFER;
+		}
 		if (((*game_data).mode==2)&&((*game_data).upnext==2))
 		{
 			move_type = get_Move_AI(game_data);
@@ -182,10 +195,10 @@ void game_Loop(game_data_type *game_data, char *archivo)
 		{
 		case 1 ... 2: 
 			modify_Board(game_data, move_type);
-			(*game_data).upnext = (++turn%2)+1;
+			(*game_data).upnext= (((*game_data).upnext)%2)+1;
 			break;
 		case 3:
-			printf("saving...\n");
+			guardado=1;
 			break;
 		case 4:
 			CLEAR_GRAPHICS;
