@@ -252,7 +252,7 @@ void game_Loop(game_data_type *game_data, char *archivo)
 	CLEAR_GRAPHICS;
 }
 
-int main()
+void main()
 {
 
 	srand(time(NULL));

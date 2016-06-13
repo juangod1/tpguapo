@@ -108,7 +108,7 @@ typedef struct
 int get_Move_AI(game_data_type *game_data)
 {
 	int i, j, k, l;
-	int capt_aux, from_x_aux, from_y_aux, to_x_aux, to_y_aux, aux_i, aux_j;
+	int capt_aux, aux_i, aux_j;
 	int move_type, move_index, captures=-1, equal_moves_counter=0;
 	potential_move *potential_moves=NULL, *tmp;
 
