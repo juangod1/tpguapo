@@ -179,6 +179,7 @@ int get_Move_AI(game_data_type *game_data)
 		(*game_data).to_x = potential_moves[move_index].to_x;
 		(*game_data).to_y = potential_moves[move_index].to_y;
 	}
+	free(potential_moves);
 	return move_type;
 }
 int check_Captures(game_data_type *game_data, int i, int j)

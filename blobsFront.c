@@ -84,8 +84,10 @@ char* menu(game_data_type *game_data)
 	(*game_data).mode = opcion;
 	if ( opcion == 3)
 		return file;
-	else
+	else{
+		free(file);
 		return NULL;
+	}
 }
 
 void display_Board(game_data_type *game_data)
@@ -163,6 +165,7 @@ int get_Move(game_data_type *game_data)
            			}
            	}
         }
+				free(filename);
         return tipoinput;
 }
 
@@ -186,6 +189,7 @@ void game_Loop(game_data_type *game_data, char *archivo)
 			break;
 
 	}
+	free(archivo);
 	if(cargo==0)
 	{
 		(*game_data).upnext = initial_Turn();
