@@ -264,7 +264,7 @@ int end_Game(game_data_type *game_data)
 		winner = 3;
 	else
 		winner = (((*game_data).blobsA>(*game_data).blobsZ)?1:2);
-	return ;
+	return winner;
 }
 void fill_Blocks(game_data_type *game_data)
 {
