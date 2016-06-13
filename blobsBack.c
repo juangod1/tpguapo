@@ -178,14 +178,15 @@ int get_Move_AI(game_data_type *game_data)
 }
 int check_Captures(game_data_type *game_data, int i, int j)
 {
-	int aux_j, aux_i, k, captures=0, jugador_booleano=((*game_data).upnext%2);
+	int aux_j, aux_i, k, captures=0;
+	char pieza=(((*game_data).upnext%2)?'Z':'A');
 	for ( k=0 ; k<360 ; k+=45 )
 	{
 		aux_i = i;
 		aux_j = j;
 
 		direccion(k, &aux_i, &aux_j);
-		if ( (*game_data).board[aux_i][aux_j]==(jugador_booleano?'Z':'A'))
+		if ( (*game_data).board[aux_i][aux_j]== pieza )
 			captures++;
 	}
 	return captures;
@@ -235,7 +236,7 @@ int check_Move(game_data_type *game_data)
 }
 int end_Game(game_data_type *game_data)
 {
-	int i, j, aux_j, aux_i, l, k;
+	int i, j, aux_j, aux_i, l, k, winner;
     char player= ((*game_data).upnext==1)?'A':'Z';
 
     for (i=0 ; i<(*game_data).size_y ; i++)
@@ -259,7 +260,11 @@ int end_Game(game_data_type *game_data)
 		}
 	}
 	fill_Blocks(game_data);
-	return ((*game_data).blobsA>(*game_data).blobsZ)?1:2;
+	if ( (*game_data).blobsA == (*game_data).blobsZ )
+		winner = 3;
+	else
+		winner = (((*game_data).blobsA>(*game_data).blobsZ)?1:2);
+	return ;
 }
 void fill_Blocks(game_data_type *game_data)
 {
@@ -270,7 +275,13 @@ void fill_Blocks(game_data_type *game_data)
 		for (j=0 ; j<(*game_data).size_x ; j++)
 		{
 		    if((*game_data).board[i][j]==0)
+					{
 		        (*game_data).board[i][j]=player;
+						if (player=='A')
+							(*game_data).blobsA++;
+						else if (player=='Z')
+							(*game_data).blobsZ++;
+					}
 		}
 	}
 }

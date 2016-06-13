@@ -195,9 +195,9 @@ void game_Loop(game_data_type *game_data, char *archivo)
 		switch(move_type)
 		{
 		case 1 ... 2:
-			modify_Board(game_data, move_type);
-
 			captures = check_Captures(game_data, (*game_data).to_y, (*game_data).to_x);
+			modify_Board(game_data, move_type);
+			printf("toY:%i toX:%i\n",(*game_data).to_y, (*game_data).to_x);
 			printf("%d\n",captures);
 			printf("%d\n",move_type);
 			printf("%d\n",(*game_data).upnext);
