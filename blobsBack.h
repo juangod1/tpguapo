@@ -11,6 +11,7 @@ typedef struct
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y];
 } game_data_type;
 
+int check_Captures(game_data_type *game_data, , (*game_data).to_x);
 int check_Move(game_data_type *game_data);
 int initial_Turn(void);
 void modify_Board(game_data_type *game_data, int move_type);

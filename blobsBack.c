@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "blobsBack.h"
-#include "getnum.h"
 #include <math.h>
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
@@ -75,7 +74,7 @@ int save_File(char *filename, game_data_type * game_data)
 	return 0;
 }
 
-void direccion(int ang, int *i, int *j)
+void direction(int ang, int *i, int *j)
 {
 	if (ang == 0) {*j+=1;}
 	else if (ang == 45)  {*j+=1; *i-=1;}
@@ -125,7 +124,7 @@ int get_Move_AI(game_data_type *game_data)
 					aux_j = j;
 					for ( l=0 ; l<2 ; l++ )
 					{
-						direccion(k, &aux_i, &aux_j);
+						direction(k, &aux_i, &aux_j);
 						if ( valid_Space(game_data, aux_i, aux_j) )
 						{
 							(*game_data).from_x=j;
@@ -191,7 +190,7 @@ int check_Captures(game_data_type *game_data, int i, int j)
 		aux_i = i;
 		aux_j = j;
 
-		direccion(k, &aux_i, &aux_j);
+		direction(k, &aux_i, &aux_j);
 		if ( (*game_data).board[aux_i][aux_j]== pieza )
 			captures++;
 	}
@@ -257,7 +256,7 @@ int end_Game(game_data_type *game_data)
 							aux_j=j;
 		      		for(l=0; l<2; l++)
 		      		{
-		           		direccion(k, &aux_i, &aux_j);
+		           		direction(k, &aux_i, &aux_j);
 		            	if( valid_Space(game_data, aux_i, aux_j) )
 		                	return 0;
 		        	}

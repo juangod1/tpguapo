@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "blobsBack.h"
-#include "getnum.h"
 #include <string.h>
 #include <time.h>
 #define BOARD_SIZE_MAX_Y 30
@@ -15,7 +14,7 @@
 char* menu(game_data_type *game_data)
 {
 	int menu_state=1, opcion=0, cantleido;
-	char file_stdin[20], nuevalinea;
+	char file_stdin[20], nuevalinea, size_string[10];
 	char * file = malloc(17*sizeof(char));
 	while(menu_state)
 	{
@@ -33,8 +32,26 @@ char* menu(game_data_type *game_data)
 		}
 		switch(opcion){
 			case 1 ... 2:
-				(*game_data).size_y = getint("Ingrese la cantidad de filas (Entre 5 y 30): ");
-				(*game_data).size_x = getint("Ingrese la cantidad de columnas (Entre 5 y 30): ");
+				printf("Ingrese la cantidad de filas (Entre 5 y 30): ");
+				fgets(size_string, 4, stdin);
+				cantleido = sscanf(size_string, "%i%c", &((*game_data).size_y), &nuevalinea);
+				if ((nuevalinea != '\n') || (cantleido != 2))
+				{
+					opcion = -1;
+					break;
+				}
+				nuevalinea=0;
+
+				printf("Ingrese la cantidad de columnas (Entre 5 y 30): ");
+				fgets(size_string, 4, stdin);
+				cantleido = sscanf(size_string, "%i%c", &((*game_data).size_x), &nuevalinea);
+				if ((nuevalinea != '\n') || (cantleido != 2))
+				{
+					opcion = -1;
+					break;
+				}
+				nuevalinea=0;
+
 				if (((*game_data).size_y>30)||((*game_data).size_y<5)||((*game_data).size_x<5)||((*game_data).size_x>30))
 					opcion = -1;
 				else
@@ -43,14 +60,14 @@ char* menu(game_data_type *game_data)
 			case 3:
 				printf("Ingrese el nombre del archivo (max 15 caracteres): ");
 				fgets(file_stdin, 17, stdin);
-            	if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
-            	{
-					if (open_File(file,game_data)==0)
-					{
-						menu_state = 0;
+        if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
+        	{
+						if (open_File(file,game_data)==0)
+						{
+							menu_state = 0;
+						}
 					}
-				}
-				else {
+					else {
 					printf("Error al cargar (El archivo esta corrupto o no existe)\n");
 					opcion = -1;
 					}
@@ -91,13 +108,12 @@ void display_Board(game_data_type *game_data)
 		putchar('\n');
 	}
 	printf("   ");
-	for (i=0;i!=k;i++)
+	for (i=0;i!=(*game_data).size_x;i++)
 		{
-			if (i<10) printf("%d ",i);
+			if (i<9) printf("%d ",i);
 			else printf("%d",i);
 		}
 	putchar('\n');
-	printf("\n %i    %i\n",(*game_data).blobsA, (*game_data).blobsZ);
 }
 
 int get_Move(game_data_type *game_data)
@@ -238,7 +254,6 @@ void game_Loop(game_data_type *game_data, char *archivo)
 
 int main()
 {
-	int i;
 
 	srand(time(NULL));
 	game_data_type game_data = {0};
