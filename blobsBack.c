@@ -34,6 +34,9 @@ int open_File(char *filename, game_data_type *game_data)
 					game_data->board[i][j] = 0;
 		}
 	}
+
+	game_data->mode++;
+
 	fclose (savefile);
 	return 0;
 }
@@ -47,13 +50,14 @@ int save_File(char *filename, game_data_type * game_data)
 	if(savefile==NULL)
 		return 1;
 
+	game_data->mode--;
+
 	fwrite(&(game_data->mode) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->upnext) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->size_y) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->size_x) ,sizeof(int),1, savefile);
 	fwrite(&game_data->blobsA ,sizeof(int),1, savefile);
 	fwrite(&game_data->blobsZ ,sizeof(int),1, savefile);
-
 	for(i=0;i<(game_data->size_y);i++)
 		{
 			for (j=0;j<(game_data->size_x);j++)
@@ -65,6 +69,8 @@ int save_File(char *filename, game_data_type * game_data)
 			}
 		}
 	fclose (savefile);
+
+	game_data->mode++;
 
 	return 0;
 }
@@ -221,7 +227,7 @@ int check_Move(game_data_type *game_data)
 	if ( (*game_data).board[(*game_data).from_y][(*game_data).from_x] == (((*game_data).upnext%2)?'A':'Z') )
 	{
 		if ((distance==1)||((distance<=sqrt(2)+0.05) && (distance>= sqrt(2)-0.05)))  		/* Estoy chequeando que la distancia*/
-			move_type = 1;																	/*    sea la de un salto correcto   */
+			move_type = 1;																																/*    sea la de un salto correcto   */
 		else if ((distance==2)||((distance<=sqrt(8)+0.05) && (distance>= sqrt(8)-0.05)))
 			move_type = 2;
 		else
