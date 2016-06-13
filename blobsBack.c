@@ -9,7 +9,6 @@
 int valid_Space(game_data_type *game_data, int i, int j);
 int check_Captures(game_data_type *game_data, int i, int j);
 void fill_Blocks(game_data_type *game_data);
-int count_Blocks(game_data_type *game_data);
 
 int open_File(char *filename, game_data_type *game_data)
 {
@@ -20,14 +19,20 @@ int open_File(char *filename, game_data_type *game_data)
 		return 1;
 	}
 	fread(&game_data->mode ,sizeof(int),1, savefile);
-	fread(&game_data->upnext ,sizeof(int),1, savefile);								
+	fread(&game_data->upnext ,sizeof(int),1, savefile);
 	fread(&game_data->size_y ,sizeof(int),1, savefile);
 	fread(&game_data->size_x ,sizeof(int),1, savefile);
+	fread(&game_data->blobsA ,sizeof(int),1, savefile);
+	fread(&game_data->blobsZ ,sizeof(int),1, savefile);
+
 	for(i=0;i<(game_data->size_y);i++)
 	{
-	
-		fread(game_data->board[i] ,game_data->size_x,1, savefile);
-	
+		for (j=0;j<(game_data->size_x);j++)
+		{
+				fread(&(game_data->board[i][j]) ,sizeof(char),1, savefile);
+				if (game_data->board[i][j]=='0')
+					game_data->board[i][j] = 0;
+		}
 	}
 	fclose (savefile);
 	return 0;
@@ -36,21 +41,29 @@ int open_File(char *filename, game_data_type *game_data)
 int save_File(char *filename, game_data_type * game_data)
 {
 	int i,j;
+	char cero=0;
 	FILE * savefile;
 	savefile = fopen( filename, "w");
-	if(savefile==NULL){
+	if(savefile==NULL)
 		return 1;
-	}
+
 	fwrite(&(game_data->mode) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->upnext) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->size_y) ,sizeof(int),1, savefile);
 	fwrite(&(game_data->size_x) ,sizeof(int),1, savefile);
+	fwrite(&game_data->blobsA ,sizeof(int),1, savefile);
+	fwrite(&game_data->blobsZ ,sizeof(int),1, savefile);
+
 	for(i=0;i<(game_data->size_y);i++)
-	{
-	
-	fwrite(game_data->board[i] ,game_data->size_x,1, savefile);
-	
-	}
+		{
+			for (j=0;j<(game_data->size_x);j++)
+			{
+				if (game_data->board[i][j]==0)
+					fwrite( &cero,sizeof(char),1, savefile);
+				else
+					fwrite(&(game_data->board[i][j]) ,sizeof(char),1, savefile);
+			}
+		}
 	fclose (savefile);
 
 	return 0;
@@ -81,7 +94,7 @@ void modify_Adjacent_Blocks(game_data_type *game_data)
         }
     }
 }
-typedef struct 
+typedef struct
 {
 	int move_type;
 	int from_x, from_y, to_x, to_y;
@@ -165,14 +178,14 @@ int get_Move_AI(game_data_type *game_data)
 }
 int check_Captures(game_data_type *game_data, int i, int j)
 {
-	int aux_j, aux_i, k, captures=0;
+	int aux_j, aux_i, k, captures=0, jugador_booleano=((*game_data).upnext%2);
 	for ( k=0 ; k<360 ; k+=45 )
 	{
 		aux_i = i;
 		aux_j = j;
-		
+
 		direccion(k, &aux_i, &aux_j);
-		if ( (*game_data).board[aux_i][aux_j]=='A' )
+		if ( (*game_data).board[aux_i][aux_j]==(jugador_booleano?'Z':'A'))
 			captures++;
 	}
 	return captures;
@@ -203,14 +216,14 @@ int check_Move(game_data_type *game_data)
 	float distance, hip = ((*game_data).from_x-(*game_data).to_x)*((*game_data).from_x-(*game_data).to_x)+((*game_data).from_y-(*game_data).to_y)*((*game_data).from_y-(*game_data).to_y);
 
 	distance = sqrt(hip);
-	
+
 	if ( (*game_data).board[(*game_data).from_y][(*game_data).from_x] == (((*game_data).upnext%2)?'A':'Z') )
 	{
-		if ((distance==1)||((distance<=sqrt(2)+0.05) && (distance>= sqrt(2)-0.05)))  		/* Estoy chequeando que la distancia*/ 
+		if ((distance==1)||((distance<=sqrt(2)+0.05) && (distance>= sqrt(2)-0.05)))  		/* Estoy chequeando que la distancia*/
 			move_type = 1;																	/*    sea la de un salto correcto   */
-		else if ((distance==2)||((distance<=sqrt(8)+0.05) && (distance>= sqrt(8)-0.05))) 
+		else if ((distance==2)||((distance<=sqrt(8)+0.05) && (distance>= sqrt(8)-0.05)))
 			move_type = 2;
-		else 
+		else
 			move_type = 0;
 
 		if ( !valid_Space(game_data, (*game_data).to_y, (*game_data).to_x))
@@ -224,7 +237,7 @@ int end_Game(game_data_type *game_data)
 {
 	int i, j, aux_j, aux_i, l, k;
     char player= ((*game_data).upnext==1)?'A':'Z';
-    
+
     for (i=0 ; i<(*game_data).size_y ; i++)
 	{
 		for (j=0 ; j<(*game_data).size_x ; j++)
@@ -234,7 +247,7 @@ int end_Game(game_data_type *game_data)
 		        for ( k=0 ; k<360 ; k+=45 )
 		        {
 		      		aux_i=i;
-					aux_j=j;
+							aux_j=j;
 		      		for(l=0; l<2; l++)
 		      		{
 		           		direccion(k, &aux_i, &aux_j);
@@ -246,7 +259,7 @@ int end_Game(game_data_type *game_data)
 		}
 	}
 	fill_Blocks(game_data);
-	return count_Blocks(game_data);
+	return ((*game_data).blobsA>(*game_data).blobsZ)?1:2;
 }
 void fill_Blocks(game_data_type *game_data)
 {
@@ -259,23 +272,5 @@ void fill_Blocks(game_data_type *game_data)
 		    if((*game_data).board[i][j]==0)
 		        (*game_data).board[i][j]=player;
 		}
-	} 
-}
-int count_Blocks(game_data_type *game_data)
-{
-	int i, j, contador1=0, contador2=0;
-    for (i=0 ; i<(*game_data).size_y ; i++)
-	{
-		for (j=0 ; j<(*game_data).size_x ; j++)
-		{
-		    if((*game_data).board[i][j]=='A')
-		        contador1++;
-		    else
-		        contador2++;
-		}
 	}
-	if(contador1==contador2)
-	    return 3;
-    else
-        return ((contador1>contador2)?1:2);
 }

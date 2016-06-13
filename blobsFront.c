@@ -21,10 +21,10 @@ char* menu(game_data_type *game_data)
 	{
 		CLEAR_GRAPHICS;
 
-		if (opcion==-1) 
+		if (opcion==-1)
 			printf("\nError al leer parametros.\n");
 
-		printf("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElija la opcion correspondiente: ");		
+		printf("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElija la opcion correspondiente: ");
 		scanf("%d", &opcion);
 		if(getchar()!='\n')
 		{
@@ -38,16 +38,16 @@ char* menu(game_data_type *game_data)
 				if (((*game_data).size_y>30)||((*game_data).size_y<5)||((*game_data).size_x<5)||((*game_data).size_x>30))
 					opcion = -1;
 				else
-					menu_state = 0;	
-				break;	
+					menu_state = 0;
+				break;
 			case 3:
 				printf("Ingrese el nombre del archivo (max 15 caracteres): ");
 				fgets(file_stdin, 17, stdin);
             	if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
             	{
-					if (open_File(file,game_data)==0) 
-					{	
-						menu_state = 0;	
+					if (open_File(file,game_data)==0)
+					{
+						menu_state = 0;
 					}
 				}
 				else {
@@ -67,7 +67,7 @@ char* menu(game_data_type *game_data)
 	(*game_data).mode = opcion;
 	if ( opcion == 3)
 		return file;
-	else 
+	else
 		return NULL;
 }
 
@@ -85,7 +85,7 @@ void display_Board(game_data_type *game_data)
 		{
 			if ((*game_data).board[i][j] == 0)
 				printf("%c |", (*game_data).board[i][j]);
-			else 
+			else
 				printf("%c|", (*game_data).board[i][j]);
 		}
 		putchar('\n');
@@ -97,6 +97,7 @@ void display_Board(game_data_type *game_data)
 			else printf("%d",i);
 		}
 	putchar('\n');
+	printf("\n %i    %i\n",(*game_data).blobsA, (*game_data).blobsZ);
 }
 
 int get_Move(game_data_type *game_data)
@@ -115,12 +116,12 @@ int get_Move(game_data_type *game_data)
             switch(estado)
             {
                 case 1:
-                if (save_File(filename,game_data)==1) 
+                if (save_File(filename,game_data)==1)
 				{
 					printf("Error al guardar)\n");
-					
+
 				}
-				else 
+				else
 					save_File(filename,game_data);
 
                     tipoinput=3;
@@ -150,9 +151,9 @@ int get_Move(game_data_type *game_data)
 }
 
 
-void game_Loop(game_data_type *game_data, char *archivo)					
+void game_Loop(game_data_type *game_data, char *archivo)
 {
-	int move_type, cargo=0, guardado=0, termino=0;
+	int move_type, cargo=0, guardado=0, termino=0, captures;
 
 	switch((*game_data).mode)
 	{
@@ -160,14 +161,14 @@ void game_Loop(game_data_type *game_data, char *archivo)
 			(*game_data).board[0][0]= 'A';
 			(*game_data).board[(*game_data).size_y-1][0]= 'A';
 			(*game_data).board[0][(*game_data).size_x-1]= 'Z';
-			(*game_data).board[(*game_data).size_y-1][(*game_data).size_x-1]= 'Z';	
+			(*game_data).board[(*game_data).size_y-1][(*game_data).size_x-1]= 'Z';
 			break;
 		case CONTINUEGAME:
 			cargo=1;
 			(*game_data).upnext--;
 			open_File(archivo, game_data);
 			break;
-		
+
 	}
 	if(cargo==0)
 	{
@@ -193,8 +194,28 @@ void game_Loop(game_data_type *game_data, char *archivo)
 			move_type = get_Move(game_data);
 		switch(move_type)
 		{
-		case 1 ... 2: 
+		case 1 ... 2:
 			modify_Board(game_data, move_type);
+
+			captures = check_Captures(game_data, (*game_data).to_y, (*game_data).to_x);
+			printf("%d\n",captures);
+			printf("%d\n",move_type);
+			printf("%d\n",(*game_data).upnext);
+			if ((*game_data).upnext==1)
+			{
+				(*game_data).blobsA += captures;
+				(*game_data).blobsZ -= captures;
+				if (move_type==1)
+					(*game_data).blobsA++;
+			}
+			else
+			{
+				(*game_data).blobsA -= captures;
+				(*game_data).blobsZ += captures;
+				if (move_type==1)
+					(*game_data).blobsZ++;
+			}
+
 			(*game_data).upnext= (((*game_data).upnext)%2)+1;
 			break;
 		case 3:
@@ -225,6 +246,8 @@ int main()
 
 	srand(time(NULL));
 	game_data_type game_data = {0};
+	game_data.blobsA = 2;
+	game_data.blobsZ = 2;
 
 	char *archivo = menu(&game_data);
 	game_Loop(&game_data,archivo);

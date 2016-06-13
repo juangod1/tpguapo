@@ -7,7 +7,7 @@
 typedef struct
 {
 	int size_x, size_y, from_x, from_y, to_x, to_y;
-	int upnext, mode;
+	int upnext, mode, blobsA, blobsZ;
 	char board[BOARD_SIZE_MAX_X][BOARD_SIZE_MAX_Y];
 } game_data_type;
 
