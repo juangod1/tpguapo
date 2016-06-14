@@ -9,7 +9,7 @@ int valid_Space(game_data_type *game_data, int i, int j);
 int check_Captures(game_data_type *game_data, int i, int j);
 void fill_Blocks(game_data_type *game_data);
 
-int open_File(char *filename, game_data_type *game_data) 
+int open_File(char *filename, game_data_type *game_data)
 {
 	int i,j;
 	FILE * savefile;
@@ -34,7 +34,7 @@ int open_File(char *filename, game_data_type *game_data)
 		}
 	}
 
-	game_data->mode++; /*incremento mode por que utilisamos 1 y 2 en vez de 0 y 1*/
+	game_data->mode++; /*incremento mode porque utilisamos 1 y 2 en vez de 0 y 1*/
 
 	fclose (savefile);
 	return 0;
@@ -43,7 +43,7 @@ int open_File(char *filename, game_data_type *game_data)
 int save_File(char *filename, game_data_type * game_data)
 {
 	int i,j;
-	char cero=0;	
+	char cero=0;
 	FILE * savefile;
 	savefile = fopen( filename, "w");
 	if(savefile==NULL)
@@ -74,8 +74,8 @@ int save_File(char *filename, game_data_type * game_data)
 	return 0;
 }
 
-void direction(int ang, int *i, int *j		/*Funcion que recive el "angulo" que vendria a ser una de las 8 celdas adyacentes*/
-{						/*y mueve los indices de la matriz respectivamente*/
+void direction(int ang, int *i, int *j)		/*Funcion que recibe el "angulo" que vendria a ser una de las 8 celdas adyacentes*/
+{																					/*y mueve los indices de la matriz respectivamente*/
 	if (ang == 0) {*j+=1;}
 	else if (ang == 45)  {*j+=1; *i-=1;}
 	else if (ang == 90)  {*i-=1;}
@@ -131,9 +131,9 @@ int get_Move_AI(game_data_type *game_data)
 							(*game_data).from_y=i;
 							(*game_data).to_x=aux_j;
 							(*game_data).to_y=aux_i;
-							move_type = check_Move(game_data);
+							move_type = check_Move(game_data); // check_Move retorna si es mitosis o salto
 
-							if (  ((capt_aux=check_Captures(game_data, aux_i, aux_j)) == captures) )
+							if (  ((capt_aux=check_Captures(game_data, aux_i, aux_j)) == captures) ) // Si la movida tiene el mismo numero de capturas la agrega
 							{
 								tmp = realloc(potential_moves, (++equal_moves_counter)*sizeof(potential_move));
 								if (tmp) potential_moves = tmp;
@@ -143,11 +143,12 @@ int get_Move_AI(game_data_type *game_data)
 								potential_moves[equal_moves_counter-1].to_y = aux_i;
 								potential_moves[equal_moves_counter-1].move_type = move_type;
 							}
-							else if ( capt_aux > captures )
+							else if ( capt_aux > captures ) // Si la movida tiene mayor numero de movidas reinicializa la estructura
 							{
 								captures = capt_aux;
 								tmp = realloc(potential_moves, sizeof(potential_move));
-								if (tmp) potential_moves = tmp;
+								if (tmp)
+									potential_moves = tmp;
 								potential_moves[0].from_x = j;
 								potential_moves[0].from_y = i;
 								potential_moves[0].to_x = aux_j;
@@ -170,7 +171,7 @@ int get_Move_AI(game_data_type *game_data)
 		(*game_data).to_x = potential_moves[0].to_x;
 		(*game_data).to_y = potential_moves[0].to_y;
 	}
-	else
+	else // si hay mas de una movida con el mismo numero de capturas elige una al azar
 	{
 		move_index = rand()%(equal_moves_counter);
 		move_type = potential_moves[move_index].move_type;
@@ -200,8 +201,10 @@ int check_Captures(game_data_type *game_data, int i, int j)
 void modify_Board(game_data_type *game_data, int move_type)
 {
 	char character = ((((*game_data).upnext)%2)?'A':'Z');
+
 	(*game_data).board[(*game_data).to_y][(*game_data).to_x] = character;
-	if (move_type==2) (*game_data).board[(*game_data).from_y][(*game_data).from_x] = 0;
+	if (move_type==2)
+		(*game_data).board[(*game_data).from_y][(*game_data).from_x] = 0;
 	modify_Adjacent_Blocks(game_data);
 }
 
