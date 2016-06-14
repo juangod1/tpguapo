@@ -60,17 +60,17 @@ char* menu(game_data_type *game_data)
 			case 3:
 				printf("Ingrese el nombre del archivo (max 15 caracteres): ");
 				fgets(file_stdin, 17, stdin);
-        if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
-        	{
-						if (open_File(file,game_data)==0)
-						{
-							menu_state = 0;
-						}
+        			if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
+        			{
+					if (open_File(file,game_data)==0)
+					{
+						menu_state = 0;
 					}
-					else {
+				}
+				else {
 					printf("Error al cargar (El archivo esta corrupto o no existe)\n");
 					opcion = -1;
-					}
+				}
 				break;
 			case 4:
 				CLEAR_GRAPHICS;
