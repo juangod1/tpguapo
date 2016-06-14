@@ -9,7 +9,7 @@ int valid_Space(game_data_type *game_data, int i, int j);
 int check_Captures(game_data_type *game_data, int i, int j);
 void fill_Blocks(game_data_type *game_data);
 
-int open_File(char *filename, game_data_type *game_data)
+int open_File(char *filename, game_data_type *game_data) 
 {
 	int i,j;
 	FILE * savefile;
@@ -34,7 +34,7 @@ int open_File(char *filename, game_data_type *game_data)
 		}
 	}
 
-	game_data->mode++;
+	game_data->mode++; /*incremento mode por que utilisamos 1 y 2 en vez de 0 y 1*/
 
 	fclose (savefile);
 	return 0;
@@ -43,7 +43,7 @@ int open_File(char *filename, game_data_type *game_data)
 int save_File(char *filename, game_data_type * game_data)
 {
 	int i,j;
-	char cero=0;
+	char cero=0;	
 	FILE * savefile;
 	savefile = fopen( filename, "w");
 	if(savefile==NULL)
@@ -74,8 +74,8 @@ int save_File(char *filename, game_data_type * game_data)
 	return 0;
 }
 
-void direction(int ang, int *i, int *j)
-{
+void direction(int ang, int *i, int *j		/*Funcion que recive el "angulo" que vendria a ser una de las 8 celdas adyacentes*/
+{						/*y mueve los indices de la matriz respectivamente*/
 	if (ang == 0) {*j+=1;}
 	else if (ang == 45)  {*j+=1; *i-=1;}
 	else if (ang == 90)  {*i-=1;}
@@ -226,7 +226,7 @@ int check_Move(game_data_type *game_data)
 
 	if ( (*game_data).board[(*game_data).from_y][(*game_data).from_x] == (((*game_data).upnext%2)?'A':'Z') )
 	{
-		if ((distance==1)||((distance<=sqrt(2)+0.05) && (distance>= sqrt(2)-0.05)))  		/* Estoy chequeando que la distancia*/
+		if ((distance==1)||((distance<=sqrt(2)+0.05) && (distance>= sqrt(2)-0.05)))  		/* Estoy igualando floats por aproximacion*/
 			move_type = 1;																																/*    sea la de un salto correcto   */
 		else if ((distance==2)||((distance<=sqrt(8)+0.05) && (distance>= sqrt(8)-0.05)))
 			move_type = 2;
