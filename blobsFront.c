@@ -5,7 +5,6 @@
 #include <time.h>
 #define BOARD_SIZE_MAX_Y 30
 #define BOARD_SIZE_MAX_X 30
-#define CLEAR_GRAPHICS system("clear")
 #define BORRA_BUFFER while (getchar() != '\n')
 #define NEWGAMEPVP 1
 #define NEWGAMEPVAI 2
@@ -18,7 +17,6 @@ char* menu(game_data_type *game_data)
 	char * file = malloc(17*sizeof(char));
 	while(menu_state)
 	{
-		CLEAR_GRAPHICS;
 
 		if (opcion==-1)
 			printf("\nError al leer parametros.\n");
@@ -73,7 +71,6 @@ char* menu(game_data_type *game_data)
 				}
 				break;
 			case 4:
-				CLEAR_GRAPHICS;
 				exit(0);
 				break;
 			default:
@@ -93,7 +90,6 @@ char* menu(game_data_type *game_data)
 void display_Board(game_data_type *game_data)
 {
 	int i,j,k=0;
-	CLEAR_GRAPHICS;
 	putchar('\n');
 	for ( i=0 ; i<(*game_data).size_y ; i++ )
 	{
@@ -129,7 +125,7 @@ int get_Move(game_data_type *game_data)
             fgets(respuesta, 21, stdin);
             if((cantleido=(sscanf(respuesta, "save %s%c", filename, &nuevalinea)))==2 && nuevalinea=='\n')
                 	estado=1;
-            if(strcmp("exit\n",respuesta)==0)
+            if(strcmp("quit\n",respuesta)==0)
                 estado=2;
             switch(estado)
             {
@@ -149,18 +145,16 @@ int get_Move(game_data_type *game_data)
                     break;
 
                 default:
-                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_x, &(*game_data).from_y, &(*game_data).to_x, &(*game_data).to_y, &nuevalinea);
+                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_y, &(*game_data).from_x, &(*game_data).to_y, &(*game_data).to_x, &nuevalinea);
                     if(cantleido==5 && nuevalinea==10)
                     {
                         if((tipoinput=check_Move(game_data))==0)
                         {
-                            display_Board( game_data );
                             printf("Error: Jugada Imposible\n");
                         }
                     }
                     else
                     {
-                    	display_Board( game_data );
                         printf("Error: Lectura de parametros incorrectos\n");
            			}
            	}
@@ -208,7 +202,6 @@ void game_Loop(game_data_type *game_data, char *archivo)
 		if (((*game_data).mode==2)&&((*game_data).upnext==2))
 		{
 			move_type = get_Move_AI(game_data);
-			system("sleep 1");
 		}
 		else
 			move_type = get_Move(game_data);
@@ -238,14 +231,11 @@ void game_Loop(game_data_type *game_data, char *archivo)
 			guardado=1;
 			break;
 		case 4:
-			CLEAR_GRAPHICS;
 			exit(0);
 			break;
 		}
-		display_Board(game_data);
 		termino=end_Game(game_data);
 	}
-	system("sleep 1");
 	display_Board(game_data);
 	if(termino==3)
 	    printf("El juego ha terminado en un empate!");
@@ -253,7 +243,6 @@ void game_Loop(game_data_type *game_data, char *archivo)
 	    printf("Felicitaciones jugador %d has ganado! \n",termino);
 	printf("Oprima 'enter' para salir\n");
 	getchar();
-	CLEAR_GRAPHICS;
 }
 
 void main()
