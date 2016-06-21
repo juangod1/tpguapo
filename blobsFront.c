@@ -189,9 +189,9 @@ void game_Loop(game_data_type *game_data, char *archivo)
 		(*game_data).upnext = initial_Turn();
 		(*game_data).upnext = (((*game_data).upnext)%2)+1;
 	}
+	display_Board(game_data);
 	while(!termino)
 	{
-		display_Board(game_data);
 		if(guardado==1)
 		{
 			guardado=0;
@@ -234,6 +234,7 @@ void game_Loop(game_data_type *game_data, char *archivo)
 			exit(0);
 			break;
 		}
+		display_Board(game_data);
 		termino=end_Game(game_data);
 	}
 	display_Board(game_data);
