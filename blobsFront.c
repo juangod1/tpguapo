@@ -13,7 +13,7 @@
 char* menu(game_data_type *game_data)
 {
 	int menu_state=1, opcion=0, cantleido;
-	char file_stdin[20], nuevalinea, size_string[10];
+	char file_stdin[20], nuevalinea, size_string[10], save[5];
 	char * file = malloc(17*sizeof(char));
 	while(menu_state)
 	{
@@ -116,15 +116,19 @@ void display_Board(game_data_type *game_data)
 
 int get_Move(game_data_type *game_data)
 {
-    char respuesta[20], nuevalinea;
+    char respuesta[20], save[5], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0;
     char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
         {
             printf("Turno de Jugador %d\n", (*game_data).upnext);
             fgets(respuesta, 21, stdin);
-            if((cantleido=(sscanf(respuesta, "save %s%c", filename, &nuevalinea)))==2 && nuevalinea=='\n')
+            if((cantleido=(sscanf(respuesta, "%s %s%c", save, filename, &nuevalinea)))==3 && nuevalinea=='\n')
+            {
+            	printf("paso el sscanf\n save=%s \n comparacon=%s\n resultaen=%d", save, "save", strcmp(save, "save"));
+            	if(!strcmp(save, "save"))
                 	estado=1;
+            }
             if(strcmp("quit\n",respuesta)==0)
                 estado=2;
             switch(estado)
@@ -133,12 +137,12 @@ int get_Move(game_data_type *game_data)
                 if (save_File(filename,game_data)==1)
 				{
 					printf("Error al guardar)\n");
-
 				}
 				else
+				{
 					save_File(filename,game_data);
-
-                    tipoinput=3;
+                	tipoinput=3;
+                }
                     break;
                 case 2:
                     tipoinput=4;
