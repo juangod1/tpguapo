@@ -125,7 +125,6 @@ int get_Move(game_data_type *game_data)
             fgets(respuesta, 21, stdin);
             if((cantleido=(sscanf(respuesta, "%s %s%c", save, filename, &nuevalinea)))==3 && nuevalinea=='\n')
             {
-            	printf("paso el sscanf\n save=%s \n comparacon=%s\n resultaen=%d", save, "save", strcmp(save, "save"));
             	if(!strcmp(save, "save"))
                 	estado=1;
             }
