@@ -1,0 +1,14 @@
+/tmp/ccOwwRjf.o: In function `menu':
+blobsFront.c:(.text+0x245): undefined reference to `open_File'
+/tmp/ccOwwRjf.o: In function `get_Move':
+blobsFront.c:(.text+0x583): undefined reference to `save_File'
+blobsFront.c:(.text+0x5a7): undefined reference to `save_File'
+blobsFront.c:(.text+0x623): undefined reference to `check_Move'
+/tmp/ccOwwRjf.o: In function `game_Loop':
+blobsFront.c:(.text+0x783): undefined reference to `open_File'
+blobsFront.c:(.text+0x79b): undefined reference to `initial_Turn'
+blobsFront.c:(.text+0x824): undefined reference to `get_Move_AI'
+blobsFront.c:(.text+0x888): undefined reference to `check_Captures'
+blobsFront.c:(.text+0x89c): undefined reference to `modify_Board'
+blobsFront.c:(.text+0x977): undefined reference to `end_Game'
+collect2: error: ld returned 1 exit status
