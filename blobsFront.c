@@ -121,7 +121,7 @@ void display_Board(game_data_type *game_data)
 int get_Move(game_data_type *game_data)
 {
     char respuesta[20], save[5], nuevalinea;
-    int cantleido=0, estado=0, tipoinput=0, saveo=1;
+    int cantleido=0, estado=0, tipoinput=0, saveo=1, yesorno;
     char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
 	{
@@ -149,11 +149,16 @@ int get_Move(game_data_type *game_data)
                 break;
             case 2:
             	printf("Desea Guardar? Y/N\n");
-            	if(getchar()=='Y')
+            	while(((yesorno=getchar())!='Y' && yesorno!='N') || getchar()!='\n')
+            	{
+            		if(getchar()!='\n')
+            			BORRA_BUFFER;
+            		printf("Porfavor ingrese Y o N.\n");
+            	}
+            	if(yesorno=='Y')
             	{
             		while(saveo==1)
             		{
-            			BORRA_BUFFER;
             			printf("Escriba el nombre deseado.\n");
             			fgets(filename, 15, stdin);
             			if ((saveo=save_File(filename,game_data))==1)
