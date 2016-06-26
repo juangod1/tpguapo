@@ -122,7 +122,7 @@ int get_Move(game_data_type *game_data)
 {
     char respuesta[20], save[5], nuevalinea;
     int cantleido=0, estado=0, tipoinput=0, saveo=1, yesorno;
-    char *filename=malloc(15*sizeof(char));
+    char *filename=calloc(15,15);
     while(tipoinput==0)
 		{
   		printf("Turno de Jugador %d\n", (*game_data).upnext);
@@ -160,17 +160,23 @@ int get_Move(game_data_type *game_data)
             		while(saveo==1)
             		{
             			printf("Escriba el nombre deseado.\n");
-            			fgets(filename, 15, stdin);
-            			if ((saveo=save_File(filename,game_data))==1)
+            			fgets(respuesta, 15, stdin);
+									sscanf(respuesta, "%s%c", filename, &nuevalinea);
+									if (nuevalinea=='\n')
 									{
-										printf("Error al guardar)\n");
+										if ((saveo=save_File(filename,game_data))==1)
+										{
+											printf("Error al guardar\n");
+										}
+										else
+										{
+											save_File(filename,game_data);
+											printf("Guardado con exito!\n");
+               		 		tipoinput=4;
+            				}
 									}
 									else
-									{
-										save_File(filename,game_data);
-										printf("Guardado con exito!\n");
-               		 	tipoinput=4;
-            			}
+										printf("No se admiten espacios\n");
                 }
               }
             	else
