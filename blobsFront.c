@@ -12,17 +12,14 @@
 
 char* menu(game_data_type *game_data)
 {
-	int menu_state=1, opcion=0, cantleido;
-	char file_stdin[20], nuevalinea, size_string[10], save[5];
+	int menu_state=1, opcion=0, cantleido, inputcorrecto=0;
+	char file_stdin[20], nuevalinea, size_string[10], save[5], respuesta[3];
 	char * file = malloc(17*sizeof(char));
 	while(menu_state)
 	{
-
-		if (opcion==-1)
-			printf("\nError al leer parametros.\n");
-
 		printf("\n1. Juego de dos jugadores\n2. Juego contra computadora\n3. Recuperar un juego grabado\n4. Terminar\n\nElija la opcion correspondiente: ");
-		scanf("%d", &opcion);
+		fgets(respuesta, 2, stdin);
+		sscanf(respuesta, "%d", &opcion);
 		if(getchar()!='\n')
 		{
 			opcion=-1;
@@ -30,30 +27,38 @@ char* menu(game_data_type *game_data)
 		}
 		switch(opcion){
 			case 1 ... 2:
-				printf("Ingrese la cantidad de filas (Entre 5 y 30): ");
-				fgets(size_string, 4, stdin);
-				cantleido = sscanf(size_string, "%i%c", &((*game_data).size_y), &nuevalinea);
-				if ((nuevalinea != '\n') || (cantleido != 2))
+				while(inputcorrecto==0)
 				{
-					opcion = -1;
-					break;
-				}
-				nuevalinea=0;
-
-				printf("Ingrese la cantidad de columnas (Entre 5 y 30): ");
-				fgets(size_string, 4, stdin);
-				cantleido = sscanf(size_string, "%i%c", &((*game_data).size_x), &nuevalinea);
-				if ((nuevalinea != '\n') || (cantleido != 2))
-				{
-					opcion = -1;
-					break;
-				}
-				nuevalinea=0;
-
-				if (((*game_data).size_y>30)||((*game_data).size_y<5)||((*game_data).size_x<5)||((*game_data).size_x>30))
-					opcion = -1;
-				else
+					while(inputcorrecto==0)
+					{
+						printf("Ingrese la cantidad de filas (Entre 5 y 30): \n");
+						fgets(size_string, 4, stdin);
+						cantleido = sscanf(size_string, "%i%c", &((*game_data).size_y), &nuevalinea);
+						if ((nuevalinea != '\n') || (cantleido != 2) || (*game_data).size_y>30 || (*game_data).size_y<5)
+						{
+							printf("Porfavor ingrese un numero entre 5 y 30\n");
+						}
+						else
+							inputcorrecto=1;
+						nuevalinea=0;
+					}
+					inputcorrecto=0;
+					while(inputcorrecto==0)
+					{			
+						printf("Ingrese la cantidad de columnas (Entre 5 y 30): \n");
+						fgets(size_string, 4, stdin);
+						cantleido = sscanf(size_string, "%i%c", &((*game_data).size_x), &nuevalinea);
+						if ((nuevalinea != '\n') || (cantleido != 2) || (*game_data).size_x>30 || (*game_data).size_x<5)
+						{
+							printf("Porfavor ingrese un numero entre 5 y 30\n");
+						}
+						else
+							inputcorrecto=1;
+						nuevalinea=0;
+					}
 					menu_state = 0;
+					inputcorrecto=1;
+				}
 				break;
 			case 3:
 				printf("Ingrese el nombre del archivo (max 15 caracteres): ");
@@ -67,14 +72,13 @@ char* menu(game_data_type *game_data)
 				}
 				else {
 					printf("Error al cargar (El archivo esta corrupto o no existe)\n");
-					opcion = -1;
 				}
 				break;
 			case 4:
 				exit(0);
 				break;
 			default:
-				opcion = -1;
+				printf("Porfavor ingrese una opcion correcta");
 				break;
 			}
 	}
@@ -117,22 +121,22 @@ void display_Board(game_data_type *game_data)
 int get_Move(game_data_type *game_data)
 {
     char respuesta[20], save[5], nuevalinea;
-    int cantleido=0, estado=0, tipoinput=0;
+    int cantleido=0, estado=0, tipoinput=0, saveo=1;
     char *filename=malloc(15*sizeof(char));
     while(tipoinput==0)
+	{
+    	printf("Turno de Jugador %d\n", (*game_data).upnext);
+   	    fgets(respuesta, 21, stdin);
+        if((cantleido=(sscanf(respuesta, "%s %s%c", save, filename, &nuevalinea)))==3 && nuevalinea=='\n')
         {
-            printf("Turno de Jugador %d\n", (*game_data).upnext);
-            fgets(respuesta, 21, stdin);
-            if((cantleido=(sscanf(respuesta, "%s %s%c", save, filename, &nuevalinea)))==3 && nuevalinea=='\n')
-            {
-            	if(!strcmp(save, "save"))
-                	estado=1;
-            }
-            if(strcmp("quit\n",respuesta)==0)
-                estado=2;
-            switch(estado)
-            {
-                case 1:
+          	if(!strcmp(save, "save"))
+               	estado=1;
+        }
+        if(strcmp("quit\n",respuesta)==0)
+            estado=2;
+        switch(estado)
+        {
+            case 1:
                 if (save_File(filename,game_data)==1)
 				{
 					printf("Error al guardar)\n");
@@ -142,28 +146,48 @@ int get_Move(game_data_type *game_data)
 					save_File(filename,game_data);
                 	tipoinput=3;
                 }
-                    break;
-                case 2:
-                    tipoinput=4;
-                    break;
-
-                default:
-                    cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_y, &(*game_data).from_x, &(*game_data).to_y, &(*game_data).to_x, &nuevalinea);
-                    if(cantleido==5 && nuevalinea==10)
+                break;
+            case 2:
+            	printf("Desea Guardar? Y/N\n");
+            	if(getchar()=='Y')
+            	{
+            		while(saveo==1)
+            		{
+            			BORRA_BUFFER;
+            			printf("Escriba el nombre deseado.\n");
+            			fgets(filename, 15, stdin);
+            			if ((saveo=save_File(filename,game_data))==1)
+						{
+							printf("Error al guardar)\n");
+						}
+						else
+						{
+							save_File(filename,game_data);
+							printf("Guardado con exito!\n");
+               		 		tipoinput=4;
+               		 	}
+                	}
+                }
+            	else
+                	tipoinput=4;
+                break;
+            default:
+                cantleido=sscanf(respuesta, "[%d,%d] [%d,%d]%c", &(*game_data).from_y, &(*game_data).from_x, &(*game_data).to_y, &(*game_data).to_x, &nuevalinea);
+                if(cantleido==5 && nuevalinea==10)
+                {
+                    if((tipoinput=check_Move(game_data))==0)
                     {
-                        if((tipoinput=check_Move(game_data))==0)
-                        {
-                            printf("Error: Jugada Imposible\n");
-                        }
-                    }
-                    else
-                    {
-                        printf("Error: Lectura de parametros incorrectos\n");
-           			}
-           	}
-        }
-				free(filename);
-        return tipoinput;
+          	          printf("Error: Jugada Imposible\n");
+          	         }
+                }
+           	    else
+				{
+        	        printf("Error: Lectura de parametros incorrectos\n");
+          		}
+      	}
+   	}
+	free(filename);
+       return tipoinput;
 }
 
 
