@@ -11,41 +11,62 @@ void fill_Blocks(game_data_type *game_data);
 
 int open_File(char *filename, game_data_type *game_data)
 {
-	int i,j;
+	int i,j, filecheck=0;
 	FILE * savefile;
-	savefile = fopen( filename, "r");
+	savefile = fopen( filename, "rb");
 	if(savefile==NULL){
-		return 1;
+		return 2; /*el archivo no existe, retorna 2*/
 	}
-	fread(&game_data->mode ,sizeof(int),1, savefile);
-	fread(&game_data->upnext ,sizeof(int),1, savefile);
-	fread(&game_data->size_y ,sizeof(int),1, savefile);
-	fread(&game_data->size_x ,sizeof(int),1, savefile);
-	fread(&game_data->blobsA ,sizeof(int),1, savefile);
-	fread(&game_data->blobsZ ,sizeof(int),1, savefile);
-
-	for(i=0;i<(game_data->size_y);i++)
-	{
-		for (j=0;j<(game_data->size_x);j++)
-		{
-				fread(&(game_data->board[i][j]) ,sizeof(char),1, savefile);
-				if (game_data->board[i][j]=='0')
-					game_data->board[i][j] = 0;
+	if(fread(&game_data->mode ,sizeof(int),1, savefile)==0){
+		filecheck=1;
+	}
+	else{
+		if(fread(&game_data->upnext ,sizeof(int),1, savefile)==0)
+			filecheck=1;
+		else{
+			if(fread(&game_data->size_y ,sizeof(int),1, savefile)==0)
+				filecheck=1;
+			else{
+				if(fread(&game_data->size_x ,sizeof(int),1, savefile)==0)
+					filecheck=1;
+				else{
+					if(fread(&game_data->blobsA ,sizeof(int),1, savefile)==0)
+						filecheck=1;
+					else{
+						if(fread(&game_data->blobsZ ,sizeof(int),1, savefile)==0)
+							filecheck=1;
+						else{
+							if ( (game_data->size_y>30 || game_data->size_y<5) && (game_data->size_x>30 || game_data->size_x<5))
+								filecheck=1;
+							else{
+								for(i=0;i<(game_data->size_y);i++)
+								{
+									for (j=0;j<(game_data->size_x);j++)
+									{
+										if(fread(&(game_data->board[i][j]) ,sizeof(char),1, savefile)==0)
+											filecheck=1;
+											if (game_data->board[i][j]=='0')
+												game_data->board[i][j] = 0;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
-
-	game_data->mode++; /*incremento mode porque utilisamos 1 y 2 en vez de 0 y 1*/
-
-	fclose (savefile);
-	return 0;
+	game_data->mode++; /*incremento mode porque utilizamos 1 y 2 en vez de 0 y 1*/
+	return filecheck; /* retorna 2 si el archivo no existe, 1 si esta corrupto y 0 si se pudo cargar */
 }
+
 
 int save_File(char *filename, game_data_type * game_data)
 {
 	int i,j;
 	char cero=0;
 	FILE * savefile;
-	savefile = fopen( filename, "w");
+	savefile = fopen( filename, "wb");
 	if(savefile==NULL)
 		return 1;
 

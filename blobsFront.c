@@ -12,7 +12,7 @@
 
 char* menu(game_data_type *game_data)
 {
-	int menu_state=1, opcion=0, cantleido, inputcorrecto=0;
+	int menu_state=1, opcion=0, cantleido, inputcorrecto=0, file_status;
 	char file_stdin[20], nuevalinea, size_string[10], respuesta[3];
 	char * file = malloc(17*sizeof(char));
 	while(menu_state)
@@ -36,6 +36,7 @@ char* menu(game_data_type *game_data)
 						cantleido = sscanf(size_string, "%i%c", &((*game_data).size_y), &nuevalinea);
 						if ((nuevalinea != '\n') || (cantleido != 2) || (*game_data).size_y>30 || (*game_data).size_y<5)
 						{
+							if (nuevalinea != '\n') BORRA_BUFFER;
 							printf("Porfavor ingrese un numero entre 5 y 30\n");
 						}
 						else
@@ -50,6 +51,7 @@ char* menu(game_data_type *game_data)
 						cantleido = sscanf(size_string, "%i%c", &((*game_data).size_x), &nuevalinea);
 						if ((nuevalinea != '\n') || (cantleido != 2) || (*game_data).size_x>30 || (*game_data).size_x<5)
 						{
+							if (nuevalinea != '\n') BORRA_BUFFER;
 							printf("Porfavor ingrese un numero entre 5 y 30\n");
 						}
 						else
@@ -61,25 +63,28 @@ char* menu(game_data_type *game_data)
 				}
 				break;
 			case 3:
-				printf("Ingrese el nombre del archivo (max 15 caracteres): ");
-				fgets(file_stdin, 17, stdin);
-        			if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
-        			{
-					if (open_File(file,game_data)==0)
-					{
-						menu_state = 0;
-					}
+			printf("Ingrese el nombre del archivo (max 15 caracteres):\n");
+			fgets(file_stdin, 17, stdin);
+			if((cantleido=(sscanf(file_stdin, "%s%c", file, &nuevalinea)))==2 && nuevalinea=='\n')
+			{
+				if ( (file_status = open_File(file,game_data))==0)
+				{
+					menu_state = 0;
 				}
-				else {
-					printf("Error al cargar (El archivo esta corrupto o no existe)\n");
+				else if(file_status==1)
+				{
+					printf("error al cargar, el archivo esta corrupto\n");
 				}
-				break;
-			case 4:
-				exit(0);
-				break;
-			default:
-				printf("Porfavor ingrese una opcion correcta");
-				break;
+				else
+				{
+					printf("error al cargar, el archivo no existe\n");
+				}
+			}
+			else {
+				BORRA_BUFFER;
+				printf("error al leer el nombre del archivo\n");
+			}
+			break;
 			}
 	}
 	(*game_data).mode = opcion;
@@ -120,13 +125,18 @@ void display_Board(game_data_type *game_data)
 
 int get_Move(game_data_type *game_data)
 {
-    char respuesta[20], save[5], nuevalinea;
-    int cantleido=0, estado=0, tipoinput=0, saveo=1, yesorno;
+    char respuesta[20]={0}, save[5], nuevalinea;
+    int cantleido=0, estado=0, tipoinput=0, saveo=1, yesorno, i;
     char *filename=calloc(15,15);
     while(tipoinput==0)
 		{
   		printf("Turno de Jugador %d\n", (*game_data).upnext);
 	 		fgets(respuesta, 21, stdin);
+			for (i=0;i<21;i++){
+				 if (respuesta[i]=='\n') break;
+			 }
+			if (i==21 && respuesta[20] != '\n')
+				BORRA_BUFFER;
     	if((cantleido=(sscanf(respuesta, "%s %s%c", save, filename, &nuevalinea)))==3 && nuevalinea=='\n')
     	{
   			if(!strcmp(save, "save"))
@@ -134,7 +144,9 @@ int get_Move(game_data_type *game_data)
     	}
       if(strcmp("quit\n",respuesta)==0)
       	estado=2;
-      switch(estado)
+
+
+			switch(estado)
         {
             case 1:
               if (save_File(filename,game_data)==1)
@@ -161,6 +173,11 @@ int get_Move(game_data_type *game_data)
             		{
             			printf("Escriba el nombre deseado.\n");
             			fgets(respuesta, 15, stdin);
+									for (i=0;i<21;i++){
+										 if (respuesta[i]=='\n') break;
+									 }
+									if (i==21 && respuesta[20] != '\n')
+										BORRA_BUFFER;
 									sscanf(respuesta, "%s%c", filename, &nuevalinea);
 									if (nuevalinea=='\n')
 									{
@@ -176,7 +193,7 @@ int get_Move(game_data_type *game_data)
             				}
 									}
 									else
-										printf("No se admiten espacios\n");
+										printf("Error de caracteres\n");
                 }
               }
             	else
