@@ -36,7 +36,7 @@ int open_File(char *filename, game_data_type *game_data)
 						if(fread(&game_data->blobsZ ,sizeof(int),1, savefile)==0)
 							filecheck=1;
 						else{
-							if ( (game_data->size_y>30 || game_data->size_y<5) && (game_data->size_x>30 || game_data->size_x<5))
+							if ( game_data->size_y>30 || game_data->size_y<5 || game_data->size_x>30 || game_data->size_x<5)
 								filecheck=1;
 							else{
 								for(i=0;i<(game_data->size_y);i++)
